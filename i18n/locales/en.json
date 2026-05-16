@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "home": "Home",
+    "contact": "Contact"
+  },
+  "footer": {
+    "copyright": "All rights reserved"
+  }
+}

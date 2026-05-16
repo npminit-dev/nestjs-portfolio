@@ -2,9 +2,15 @@
 </script>
 
 <template>
-  <div>
+  <div class="app">
     <NuxtRouteAnnouncer />
-    <DesignShowcase />
+    <NavBar />
+
+    <main class="main-content">
+      <NuxtPage />
+    </main>
+
+    <TheFooter />
   </div>
 </template>
 
@@ -26,5 +32,16 @@ body {
   line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 80px;
 }
 </style>
