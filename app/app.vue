@@ -10,7 +10,7 @@
       <NuxtPage />
     </main>
 
-    <TheFooter />
+    <Footer />
   </div>
 </template>
 
