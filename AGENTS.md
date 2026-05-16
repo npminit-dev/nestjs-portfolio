@@ -25,10 +25,11 @@
 - Avoid Options API unless absolutely necessary
 
 ## GSAP Usage
-Import GSAP in components:
-```ts
-import gsap from 'gsap'
-```
+Use GSAP with ScrollTrigger. See GSAP skills for complete documentation:
+- **gsap-core**: Core API, tweens, easing, duration
+- **gsap-scrolltrigger**: Scroll-linked animations, pinning, scrub, triggers
+- **gsap-timeline**: Sequencing animations, timelines
+- **gsap-plugins**: Plugins like ScrollToPlugin, Flip, Draggable
 
 ## Project Goal
 Create a professional, elegant personal website making extensive use of GSAP's most important features including:

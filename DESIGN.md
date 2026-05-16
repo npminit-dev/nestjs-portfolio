@@ -123,6 +123,10 @@ Animation is central to this project - use GSAP extensively with many animations
 ### Animation Guidelines
 - **Many animations are encouraged** - this site should be rich in motion
 - **Scroll-triggered animations** - use GSAP ScrollTrigger extensively
+- **Use Pin**: Pin elements in place while scrolling (sticky sections, reveal animations)
+- **Use Scrub**: Link animation progress to scrollbar position (parallax, progress indicators)
+- **Use Snap**: Auto-snap to elements after scroll gesture (carousels, galleries)
+- **Use Container Animations**: Horizontal scroll sections controlled by vertical scroll
 - **Parallax effects** - subtle depth movement on scroll
 - **Stagger effects** - text and elements can reveal in elegant sequences
 - **Page transitions** - smooth, sophisticated route changes
