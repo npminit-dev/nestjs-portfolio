@@ -134,10 +134,12 @@ Animation is central to this project - use GSAP extensively with many animations
 ## Components
 
 ### Navigation
+- **Position**: Fixed at top of viewport (always visible, stuck to top)
 - **Style**: Minimal, transparent background that becomes solid on scroll
 - **Behavior**: Hidden after 3 seconds of inactivity, shows on mouse movement or keyboard
 - **Logo**: Text-based, elegant
 - **Links**: Clean, uppercase small text
+- **Language Switcher**: Located in navigation bar, toggle between English/Spanish (EN | ES)
 
 ### Hero Section
 - **Layout**: Centered content, generous vertical space
@@ -172,6 +174,12 @@ Animation is central to this project - use GSAP extensively with many animations
 - Make it feel premium and sophisticated
 - Use semantic HTML for accessibility
 - Implement proper SEO meta tags
+
+### Footer
+- **Position**: Fixed at bottom of viewport (optional) or static at page end
+- **Content**: Minimal - copyright text, small social icons
+- **Style**: Subtle, does not compete with main content
+- **Background**: Same as page background, very subtle border-top if needed
 
 ## Don'ts
 

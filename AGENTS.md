@@ -92,14 +92,21 @@ Create a professional, elegant personal website making extensive use of GSAP's m
 
 ### Navigation
 - **Top Navigation Bar**:
+  - **Position**: Fixed at top of viewport (always visible, stuck to top)
   - Hidden on inactivity, shows on mouse/keyboard activity
   - Available on both pages
   - Contains links to Home and Contact
+  - Language switcher (EN | ES) in navigation bar
 - **Home Page Navigation**:
   - Scroll-based navigation (no route changes)
   - Implicit sections that the user scrolls through
   - Parallax effects and scroll-triggered animations
   - Contact link at the bottom (must scroll through to find it)
+
+### Footer
+- Elegant, minimal footer with copyright and small social icons
+- Can be fixed at bottom or static at page end
+- Does not compete with main content
 
 ### Animations (GSAP)
 - Scroll-triggered animations using ScrollTrigger
