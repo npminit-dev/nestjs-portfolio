@@ -1,0 +1,109 @@
+:root {
+  /* IMPORTANT: Dark Theme */
+
+  /* Colors - Primary Palette */
+  --color-background: #0A0A0B;
+  --color-surface: #141416;
+  --color-surface-elevated: #1C1C1F;
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #A3A3A3;
+  --color-text-muted: #737373;
+
+  /* Colors - Accent Primary (Teal) - Lighter for dark background */
+  --color-accent: #14B8A6;
+  --color-accent-hover: #2DD4BF;
+  --color-accent-light: rgba(20, 184, 166, 0.125);
+  --color-accent-muted: rgba(20, 184, 166, 0.0625);
+
+  /* Colors - Accent Secondary (Amber) */
+  --color-accent-secondary: #F59E0B;
+  --color-accent-secondary-hover: #FBBF24;
+  --color-accent-secondary-light: rgba(245, 158, 11, 0.125);
+  --color-accent-secondary-muted: rgba(245, 158, 11, 0.0625);
+
+  /* Colors - Neutrals (Dark) */
+  --color-gray-950: #030303;
+  --color-gray-900: #0A0A0B;
+  --color-gray-800: #141416;
+  --color-gray-700: #1C1C1F;
+  --color-gray-600: #27272A;
+  --color-gray-500: #3F3F46;
+  --color-gray-400: #71717A;
+  --color-gray-300: #A1A1AA;
+
+  /* Typography - Font Families */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Typography - Scale */
+  --text-display: 3rem;
+  --text-h1: 2.25rem;
+  --text-h2: 1.75rem;
+  --text-h3: 1.25rem;
+  --text-body-lg: 1.125rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-tiny: 0.75rem;
+
+  /* Typography - Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Typography - Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows - Subtle for dark theme */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+  /* Transitions */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 800ms;
+
+  /* Easing */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Container */
+  --container-max: 1200px;
+  --container-padding: 1.5rem;
+  --container-content-max: 800px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --container-padding: 1rem;
+    --text-display: 2.25rem;
+    --text-h1: 1.75rem;
+    --text-h2: 1.5rem;
+  }
+}
