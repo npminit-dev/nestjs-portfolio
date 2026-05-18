@@ -6,7 +6,7 @@ version: "1.0"
 
 ## Overview
 
-This is a personal portfolio website for Jorge Balsamo, a fullstack developer. The design should feel:
+This is a personal portfolio website for Jorge Balsamo — Maker · Creative · Human. The design should feel:
 - **Elegant and sophisticated** - not flashy or techy
 - **Corporate-friendly** - "sellable" to business clients
 - **Professional** - conveys trustworthiness and expertise
@@ -146,27 +146,39 @@ Animation is central to this project - use GSAP extensively with many animations
 - **Language Switcher**: Located in navigation bar, toggle between English/Spanish (EN | ES)
 
 ### Hero Section
-- **Layout**: Centered content, generous vertical space
-- **Headline**: Large, serif font - impactful but elegant
-- **Subtext**: Clean sans-serif, muted color
-- **CTA**: Subtle button with accent color
+- **Layout**: Full viewport height, centered content
+- **Headline**: Large serif font, SplitText lines animation on entry
+- **Subtext**: Clean sans-serif, muted color, SplitText chars animation
+- **Eyebrow**: "Maker · Creative · Human" with underline accent divider
+- **CTA**: Text-link style (no bg, no border-radius). Underline retracts on hover, label shifts left, arrow shifts right
+- **Background**: Crimson (#B91C3C) radial gradients + 64px grid (opacity 0.015, masked radial) + noise SVG (baseFrequency 2.5, overlay blend)
+- **Decorations**: 40 floating particles (1-3px, crimson/rosy gold), 3 large subtle circles (crimson), circuit trails canvas overlay
 
 ### Cards
-- **Background**: White with subtle border
+- **Background**: Surface (#141416)
 - **Padding**: `24px`
-- **Border**: `1px solid #E5E5E5`
+- **Border**: `1px solid #27272A`
 - **Radius**: `12px`
 - **Hover**: Subtle border color change, no shadow
 
 ### Buttons
-- **Primary**: Accent background, white text, `8px` radius
+- **Primary (standard)**: Accent background, white text, `8px` radius
+- **Primary (CTA)**: Text-link with underline retraction animation, accent color
 - **Secondary**: Transparent, accent text, accent border
 - **Hover**: Slight background shift, smooth transition
 
 ### Contact Section
 - **Style**: Clean form with minimal fields
-- **Inputs**: Clean borders, subtle focus state
-- **Submit**: Primary button style
+- **Inputs**: Clean borders, subtle focus state with GSAP animation
+- **Submit**: Primary button style with GSAP feedback animation (success/error states)
+- **Social Networks**: Links to LinkedIn, GitHub, etc.
+
+### Home Page Sections (below Hero)
+- **KPI Bar**: Horizontal bar with 3-4 metrics (Lighthouse 98+, 4 clients, 3+ years, AI-driven)
+- **Value Prop**: 3-4 role cards (Web, Mobile, Blockchain, AI-Augmented) + fundamentals note
+- **Impact**: 3 projects vertical layout with measurable outcomes
+- **CTA**: Full-width crimson background, simple message + link to /contact
+- **Transitions**: Each section uses ScrollTrigger pin + scrub or parallax for continuous feel
 
 ## Do's
 
@@ -180,7 +192,7 @@ Animation is central to this project - use GSAP extensively with many animations
 - Implement proper SEO meta tags
 
 ### Footer
-- **Position**: Fixed at bottom of viewport (optional) or static at page end
+- **Position**: Static at page end
 - **Content**: Minimal - copyright text, small social icons
 - **Style**: Subtle, does not compete with main content
 - **Background**: Same as page background, very subtle border-top if needed
