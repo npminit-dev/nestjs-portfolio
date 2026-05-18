@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
-import { useCircuitTrails } from '~/composables/useCircuitTrails'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const heroRef = ref<HTMLElement | null>(null)
-const circuitCanvas = ref<HTMLCanvasElement | null>(null)
-const smootherState = useState('smoother')
 let mm: gsap.MatchMedia | null = null
-
-const { start: startCircuits, stop: stopCircuits } = useCircuitTrails(circuitCanvas)
 
 const particles = Array.from({ length: 40 }, (_, i) => {
   const x = 3 + ((i * 37 + 13) % 88)
@@ -31,31 +26,17 @@ const shapes = [
   { id: 'c', size: 'min(450px, 50vw)', top: '35%', left: '50%', backgroundColor: 'radial-gradient(circle, rgba(185, 28, 60, 0.08) 0%, transparent 70%)', opacity: 0.07 },
 ]
 
-onMounted(async () => {
-  if (smootherState.value === 'pending') {
-    await new Promise<void>(resolve => {
-      const unwatch = watch(smootherState, (val) => {
-        if (val !== 'pending') {
-          unwatch()
-          resolve()
-        }
-      })
-    })
-  }
-
+onMounted(() => {
   mm = gsap.matchMedia()
-  startCircuits()
 
   mm.add('(prefers-reduced-motion: reduce)', () => {
-    gsap.set('.hero-bg-gradient', { opacity: 1 })
-    gsap.set('.particle', { scale: 1, opacity: 0.1 })
-    gsap.set('.shape', { scale: 1, opacity: 0.04 })
-    gsap.set('.hero-circuits', { opacity: 0.5 })
     gsap.set('.hero-eyebrow', { y: 0, opacity: 1 })
     gsap.set('.hero-title', { y: 0, opacity: 1 })
     gsap.set('.hero-subtitle', { y: 0, opacity: 1 })
     gsap.set('.hero-cta', { y: 0, opacity: 1 })
-    gsap.set('.hero-grid', { opacity: 0.5 })
+    gsap.set('.particle', { scale: 1, opacity: 0.1 })
+    gsap.set('.shape', { scale: 1, opacity: 0.04 })
+    gsap.set('.hero-noise', { opacity: 0.5 })
   }, heroRef.value as Element)
 
   mm.add('(prefers-reduced-motion: no-preference)', () => {
@@ -72,16 +53,16 @@ onMounted(async () => {
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
-    tl.from('.hero-bg-gradient', { opacity: 0, duration: 0.8 })
-      .from('.shape', { scale: 0.85, opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out' }, '-=0.5')
+    tl
+      .from('.hero-eyebrow', { y: 25, opacity: 0, duration: 0.4 })
+      .from('.shape', { scale: 0.85, opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out' }, '-=0.3')
       .from('.particle', { scale: 0, opacity: 0, duration: 0.35, stagger: 0.02, ease: 'power2.out' }, '-=0.4')
-      .from('.hero-eyebrow', { y: 25, opacity: 0, duration: 0.4 }, '-=0.45')
       .from(titleSplit.lines, {
         yPercent: 100,
         duration: 0.55,
         stagger: 0.1,
         ease: 'cubic-bezier(0.22, 1, 0.36, 1)'
-      }, '-=0.35')
+      }, '-=0.2')
       .from(subtitleSplit.chars, {
         autoAlpha: 0,
         duration: 0.15,
@@ -89,6 +70,16 @@ onMounted(async () => {
         ease: 'power2.out'
       }, '-=0.2')
       .from('.hero-cta', { y: 12, opacity: 0, duration: 0.35 }, '-=0.2')
+
+    const floatTween = gsap.to('.particle', {
+      y: () => gsap.utils.random(-18, -6),
+      x: () => gsap.utils.random(-10, 10),
+      duration: () => gsap.utils.random(3, 5),
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      immediateRender: false
+    })
 
     const scrollTL = gsap.timeline({
       scrollTrigger: {
@@ -101,21 +92,8 @@ onMounted(async () => {
 
     scrollTL
       .to('.hero-content', { yPercent: -8, scale: 0.95, ease: 'none' }, 0)
-      .to('.hero-bg-gradient', { scale: 1.4, opacity: 0.7, ease: 'none' }, 0)
       .to('.shape', { scale: 1.15, opacity: 0.01, ease: 'none' }, 0)
-      .to('.hero-circuits', { opacity: 0.05, ease: 'none' }, 0)
       .to('.particle', { opacity: 0.03, ease: 'none' }, 0)
-      .to('.hero-grid', { opacity: 0.1, ease: 'none' }, 0)
-
-    const floatTween = gsap.to('.particle', {
-      y: () => gsap.utils.random(-18, -6),
-      x: () => gsap.utils.random(-10, 10),
-      duration: () => gsap.utils.random(3, 5),
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut',
-      immediateRender: false
-    })
 
     return () => {
       floatTween.kill()
@@ -126,70 +104,66 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  stopCircuits()
   mm?.revert()
 })
 </script>
 
 <template>
   <section ref="heroRef" class="hero">
-    <div class="hero-bg">
-      <div class="hero-bg-gradient"></div>
-      <div class="hero-shapes">
-        <div
-          v-for="s in shapes"
-          :key="s.id"
-          class="shape"
-          :class="'shape-' + s.id"
-          :style="{
-            width: s.size,
-            height: s.size,
-            top: s.top ?? 'auto',
-            right: s.right ?? 'auto',
-            bottom: s.bottom ?? 'auto',
-            left: s.left ?? 'auto',
-            opacity: s.opacity,
-          }"
-        />
-      </div>
-      <div class="hero-particles">
-        <div
-          v-for="p in particles"
-          :key="p.id"
-          class="particle"
-          :style="{
-            width: p.size + 'px',
-            height: p.size + 'px',
-            left: p.x + '%',
-            top: p.y + '%',
-            backgroundColor: p.color,
-          }"
-        />
-      </div>
-      <div class="hero-grid"></div>
-      <canvas ref="circuitCanvas" class="hero-circuits" />
-      <svg
-        class="hero-noise"
-        viewBox="0 0 200 200"
-        preserveAspectRatio="none"
-      >
-        <filter id="noiseFilter">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="2.5"
-            numOctaves="3"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect
-          width="100%"
-          height="100%"
-          filter="url(#noiseFilter)"
-          opacity="0.025"
-        />
-      </svg>
+    <div class="hero-shapes">
+      <div
+        v-for="s in shapes"
+        :key="s.id"
+        class="shape"
+        :class="'shape-' + s.id"
+        :style="{
+          width: s.size,
+          height: s.size,
+          top: s.top ?? 'auto',
+          right: s.right ?? 'auto',
+          bottom: s.bottom ?? 'auto',
+          left: s.left ?? 'auto',
+          opacity: s.opacity,
+        }"
+      />
     </div>
+
+    <div class="hero-particles">
+      <div
+        v-for="p in particles"
+        :key="p.id"
+        class="particle"
+        :style="{
+          width: p.size + 'px',
+          height: p.size + 'px',
+          left: p.x + '%',
+          top: p.y + '%',
+          backgroundColor: p.color,
+        }"
+      />
+    </div>
+
+    <svg
+      class="hero-noise"
+      viewBox="0 0 200 200"
+      preserveAspectRatio="none"
+    >
+      <filter id="heroNoiseFilter">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="2.5"
+          numOctaves="3"
+          stitchTiles="stitch"
+        />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect
+        width="100%"
+        height="100%"
+        filter="url(#heroNoiseFilter)"
+        opacity="0.025"
+      />
+    </svg>
 
     <div class="container">
       <div class="hero-content">
@@ -231,30 +205,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   padding-top: 70px;
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  top: -70px;
-  pointer-events: none;
   overflow: hidden;
-}
-
-.hero-bg-gradient {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background:
-    radial-gradient(ellipse 55% 35% at 25% 20%, rgba(185, 28, 60, 0.10) 0%, transparent 50%),
-    radial-gradient(ellipse 45% 25% at 75% 65%, rgba(212, 138, 122, 0.05) 0%, transparent 40%),
-    radial-gradient(ellipse 35% 25% at 60% 25%, rgba(185, 28, 60, 0.06) 0%, transparent 40%),
-    radial-gradient(ellipse 40% 30% at 20% 80%, rgba(212, 138, 122, 0.03) 0%, transparent 35%);
-  will-change: transform;
 }
 
 .hero-shapes {
@@ -295,28 +247,6 @@ onUnmounted(() => {
   position: absolute;
   border-radius: 50%;
   will-change: transform;
-}
-
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 50% 45% at center, transparent 25%, black 65%);
-  -webkit-mask-image: radial-gradient(ellipse 50% 45% at center, transparent 25%, black 65%);
-  pointer-events: none;
-  opacity: 0.95;
-}
-
-.hero-circuits {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
 }
 
 .hero-noise {
@@ -462,10 +392,6 @@ onUnmounted(() => {
   .cta-button {
     padding: var(--space-sm) var(--space-lg);
     font-size: var(--text-small);
-  }
-
-  .hero-grid {
-    background-size: 40px 40px;
   }
 
   .particle {

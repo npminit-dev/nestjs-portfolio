@@ -143,14 +143,12 @@ onMounted(() => {
     }, 0.4)
 
     tl.from('.kpi-grid', {
-      scale: 0,
       opacity: 0,
       duration: 0.6,
       ease: 'power3.out',
     }, 0.6)
 
     tl.from('.kpi-card:not(.kpi-card--special)', {
-      scale: 0,
       opacity: 0,
       stagger: 0.08,
       duration: 0.45,
@@ -158,7 +156,6 @@ onMounted(() => {
     }, 0.85)
 
     tl.from('.kpi-card--special', {
-      scale: 0,
       opacity: 0,
       duration: 0.45,
       ease: 'power3.out',
@@ -355,7 +352,7 @@ onUnmounted(() => {
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid rgba(39, 39, 42, 0.35);
-  background: rgba(28, 28, 31, 0.2);
+  background: rgba(28, 28, 31, 0.04);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   transform-origin: center center;
@@ -369,7 +366,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-2xl) var(--space-lg);
-  background: rgba(20, 20, 22, 0.5);
+  background: rgba(20, 20, 22, 0.2);
   text-align: center;
   transition: background var(--duration-normal) var(--ease-default);
   transform-origin: center center;

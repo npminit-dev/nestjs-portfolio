@@ -32,6 +32,7 @@ onUnmounted(() => {
 
 <template>
   <div class="app">
+    <BackgroundTrails />
     <NuxtRouteAnnouncer />
     <CustomCursor />
     <NavBar />
