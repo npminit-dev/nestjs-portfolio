@@ -9,17 +9,17 @@
   --color-text-secondary: #A3A3A3;
   --color-text-muted: #737373;
 
-  /* Colors - Accent Primary (Teal) - Lighter for dark background */
-  --color-accent: #14B8A6;
-  --color-accent-hover: #2DD4BF;
-  --color-accent-light: rgba(20, 184, 166, 0.125);
-  --color-accent-muted: rgba(20, 184, 166, 0.0625);
+  /* Colors - Accent Primary (Crimson) - Lighter for dark background */
+  --color-accent: #B91C3C;
+  --color-accent-hover: #D42C4C;
+  --color-accent-light: rgba(185, 28, 60, 0.125);
+  --color-accent-muted: rgba(185, 28, 60, 0.0625);
 
-  /* Colors - Accent Secondary (Amber) */
-  --color-accent-secondary: #F59E0B;
-  --color-accent-secondary-hover: #FBBF24;
-  --color-accent-secondary-light: rgba(245, 158, 11, 0.125);
-  --color-accent-secondary-muted: rgba(245, 158, 11, 0.0625);
+  /* Colors - Accent Secondary (Rosy Gold) */
+  --color-accent-secondary: #D48A7A;
+  --color-accent-secondary-hover: #E49A8A;
+  --color-accent-secondary-light: rgba(212, 138, 122, 0.125);
+  --color-accent-secondary-muted: rgba(212, 138, 122, 0.0625);
 
   /* Colors - Neutrals (Dark) */
   --color-gray-950: #030303;

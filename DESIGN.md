@@ -27,14 +27,14 @@ Avoid the previous sci-fi aesthetic with sound effects. This is a more mature, p
 - **Text Muted** (`#737373`): Captions, labels, subtle info
 
 ### Accent
-- **Primary Accent** (`#14B8A6`): Sophisticated teal - main accent color (lighter for dark bg)
-- **Primary Accent Hover** (`#2DD4BF`): Hover states
-- **Primary Accent Light** (`#14B8A620`): Subtle backgrounds, highlights (with transparency)
-- **Primary Accent Muted** (`#14B8A610`): Very subtle backgrounds
-- **Secondary Accent** (`#F59E0B`): Warm amber - sophisticated accent for emphasis
-- **Secondary Accent Hover** (`#FBBF24`): Hover states
-- **Secondary Accent Light** (`#F59E0B20`): Subtle highlights
-- **Secondary Accent Muted** (`#F59E0B10`): Very subtle backgrounds
+- **Primary Accent** (`#B91C3C`): Bold crimson - main accent color (lighter for dark bg)
+- **Primary Accent Hover** (`#D42C4C`): Hover states
+- **Primary Accent Light** (`#B91C3C20`): Subtle backgrounds, highlights (with transparency)
+- **Primary Accent Muted** (`#B91C3C10`): Very subtle backgrounds
+- **Secondary Accent** (`#D48A7A`): Rosy gold - sophisticated accent for emphasis
+- **Secondary Accent Hover** (`#E49A8A`): Hover states
+- **Secondary Accent Light** (`#D48A7A20`): Subtle highlights
+- **Secondary Accent Muted** (`#D48A7A10`): Very subtle backgrounds
 
 ### Neutrals (Dark)
 - **Gray 950** (`#030303`): Deepest background

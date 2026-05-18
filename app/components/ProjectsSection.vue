@@ -35,22 +35,24 @@ onMounted(() => {
     gsap.from('.projects-header', {
       scrollTrigger: {
         trigger: sectionRef.value,
-        start: 'top 80%'
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
       },
       y: 30,
       opacity: 0,
-      duration: 0.6
+      duration: 0.6,
+      ease: 'power3.out'
     })
 
     gsap.from('.project-card', {
       scrollTrigger: {
         trigger: '.projects-grid',
-        start: 'top 80%'
+        start: 'top 75%'
       },
       y: 50,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.2,
+      duration: 0.6,
+      stagger: 0.15,
       ease: 'power3.out'
     })
   }, sectionRef.value)
@@ -156,12 +158,13 @@ onUnmounted(() => {
   background: var(--color-surface);
   border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
-  transition: all var(--duration-normal) var(--ease-default);
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .project-card:hover {
   border-color: var(--color-accent);
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(20, 184, 166, 0.12);
 }
 
 .project-header {
@@ -240,6 +243,14 @@ onUnmounted(() => {
 @media (max-width: 640px) {
   .projects-grid {
     grid-template-columns: 1fr;
+  }
+
+  .project-card {
+    padding: var(--space-lg);
+  }
+
+  .project-title {
+    font-size: var(--text-body-lg);
   }
 }
 </style>

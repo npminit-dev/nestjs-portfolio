@@ -8,18 +8,14 @@ const isVisible = ref(true)
 const isScrolled = ref(false)
 const hideTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
-const toggleLocale = () => {
-  setLocale(locale.value === 'en' ? 'es' : 'en')
-}
-
 const showNav = () => {
   if (!isVisible.value) {
     isVisible.value = true
     gsap.to('.navbar', {
       opacity: 1,
       y: 0,
-      duration: 0.4,
-      ease: 'power2.out'
+      duration: 0.35,
+      ease: 'power3.out'
     })
   }
   resetHideTimer()
@@ -30,8 +26,8 @@ const hideNav = () => {
     isVisible.value = false
     gsap.to('.navbar', {
       opacity: 0,
-      y: -20,
-      duration: 0.4,
+      y: -10,
+      duration: 0.25,
       ease: 'power2.in'
     })
   }
@@ -43,7 +39,7 @@ const resetHideTimer = () => {
 }
 
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 50
+  isScrolled.value = window.scrollY > 30
 }
 
 let ctx: gsap.Context | null = null
@@ -55,7 +51,7 @@ onMounted(() => {
   resetHideTimer()
   window.addEventListener('mousemove', showNav)
   window.addEventListener('keydown', showNav)
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
 onUnmounted(() => {
@@ -103,12 +99,14 @@ onUnmounted(() => {
   z-index: 1000;
   padding: var(--space-md) var(--container-padding);
   background: transparent;
-  transition: background-color var(--duration-normal) var(--ease-default);
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar.scrolled {
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-gray-700);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-gray-600);
 }
 
 .navbar-inner {
@@ -143,7 +141,10 @@ onUnmounted(() => {
   transition: color var(--duration-fast) var(--ease-default);
 }
 
-.nav-link:hover,
+.nav-link:hover {
+  color: var(--color-accent);
+}
+
 .nav-link.router-link-active {
   color: var(--color-accent);
 }
@@ -165,7 +166,10 @@ onUnmounted(() => {
   transition: color var(--duration-fast) var(--ease-default);
 }
 
-.lang-btn:hover,
+.lang-btn:hover {
+  color: var(--color-accent);
+}
+
 .lang-btn.active {
   color: var(--color-accent);
 }
@@ -176,12 +180,29 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .navbar-inner {
+    padding: 0 var(--space-sm);
+  }
+
   .nav-links {
     gap: var(--space-md);
   }
 
   .nav-link {
     font-size: var(--text-tiny);
+  }
+
+  .logo {
+    font-size: var(--text-h4);
+  }
+
+  .lang-btn {
+    font-size: 10px;
+    padding: 2px 4px;
+  }
+
+  .lang-divider {
+    font-size: 10px;
   }
 }
 </style>

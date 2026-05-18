@@ -14,13 +14,13 @@ onMounted(() => {
     gsap.from('.about-content > *', {
       scrollTrigger: {
         trigger: sectionRef.value,
-        start: 'top 80%',
+        start: 'top 75%',
         toggleActions: 'play none none reverse'
       },
       y: 40,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
+      duration: 0.6,
+      stagger: 0.12,
       ease: 'power3.out'
     })
   }, sectionRef.value)

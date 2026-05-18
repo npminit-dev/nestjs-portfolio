@@ -26,12 +26,12 @@ const colors = [
 ]
 
 const accents = [
-  { name: 'Accent Primary', var: '--color-accent', desc: 'Teal - Primary actions' },
-  { name: 'Accent Hover', var: '--color-accent-hover', desc: 'Teal hover state' },
-  { name: 'Accent Light', var: '--color-accent-light', desc: 'Teal background' },
-  { name: 'Accent Muted', var: '--color-accent-muted', desc: 'Subtle teal tint' },
-  { name: 'Accent Secondary', var: '--color-accent-secondary', desc: 'Amber - Highlights' },
-  { name: 'Accent Secondary Hover', var: '--color-accent-secondary-hover', desc: 'Amber hover' },
+  { name: 'Accent Primary', var: '--color-accent', desc: 'Crimson - Primary actions' },
+  { name: 'Accent Hover', var: '--color-accent-hover', desc: 'Crimson hover state' },
+  { name: 'Accent Light', var: '--color-accent-light', desc: 'Crimson background' },
+  { name: 'Accent Muted', var: '--color-accent-muted', desc: 'Subtle crimson tint' },
+  { name: 'Accent Secondary', var: '--color-accent-secondary', desc: 'Rosy Gold - Highlights' },
+  { name: 'Accent Secondary Hover', var: '--color-accent-secondary-hover', desc: 'Rosy Gold hover' },
 ]
 
 const gradients = [

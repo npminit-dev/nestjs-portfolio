@@ -33,22 +33,24 @@ onMounted(() => {
     gsap.from('.skills-header', {
       scrollTrigger: {
         trigger: sectionRef.value,
-        start: 'top 80%'
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
       },
       y: 30,
       opacity: 0,
-      duration: 0.6
+      duration: 0.6,
+      ease: 'power3.out'
     })
 
     gsap.from('.skill-category', {
       scrollTrigger: {
         trigger: '.skills-grid',
-        start: 'top 80%'
+        start: 'top 75%'
       },
       y: 40,
       opacity: 0,
-      duration: 0.7,
-      stagger: 0.1,
+      duration: 0.6,
+      stagger: 0.08,
       ease: 'power3.out'
     })
   }, sectionRef.value)

@@ -37,23 +37,39 @@ onMounted(() => {
     gsap.from('.services-label', {
       scrollTrigger: {
         trigger: sectionRef.value,
-        start: 'top 80%'
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
       },
       y: 30,
       opacity: 0,
-      duration: 0.6
+      duration: 0.6,
+      ease: 'power3.out'
     })
 
-    gsap.from('.service-card', {
+    gsap.from('.services-grid', {
       scrollTrigger: {
-        trigger: '.services-grid',
-        start: 'top 80%'
+        trigger: sectionRef.value,
+        start: 'top 70%'
       },
-      y: 50,
+      y: 40,
       opacity: 0,
       duration: 0.8,
-      stagger: 0.15,
       ease: 'power3.out'
+    })
+
+    gsap.utils.toArray('.service-card').forEach((card: any, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        },
+        y: 50,
+        opacity: 0,
+        duration: 0.6,
+        delay: i * 0.1,
+        ease: 'power3.out'
+      })
     })
   }, sectionRef.value)
 })
@@ -132,11 +148,13 @@ onUnmounted(() => {
   background: var(--color-surface);
   border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
-  transition: border-color var(--duration-normal) var(--ease-default);
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .service-card:hover {
   border-color: var(--color-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(20, 184, 166, 0.1);
 }
 
 .service-icon {

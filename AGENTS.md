@@ -138,3 +138,25 @@ Create a professional, elegant personal website making extensive use of GSAP's m
 - Create `.env` file at project root for local development
 - Use `.env.example` as template for required variables
 - Never commit secrets - use `.env` (already in .gitignore)
+
+## Key Components
+
+### Hero Section (`app/components/HeroSection.vue`)
+- **Background**: Crimson (#B91C3C) radial gradients + grid (64px, 0.015 opacity, masked radial) + noise SVG (baseFrequency 2.5, overlay)
+- **Particles**: 40 dots (1-3px) in crimson/rosy gold, float with GSAP (y: -18 to -6, x: -10 to 10, 3-5s, sine.inOut yoyo, no stagger, immediateRender: false)
+- **Shapes**: 3 large subtle crimson circles — 2 outline (90vw, 65vw) + 1 radial fill (50vw). opacity 0.06-0.08
+- **Circuit Trails** (`app/composables/useCircuitTrails.ts`): Canvas overlay on grid. Paths spawn at edges, bias toward center, no self-intersection. Config: tailPixels 100, maxPaths 12, spawnInterval ~90-270ms, drawDuration 1s (fixed regardless of path length), fadeSpeed 3.5
+- **Text**: Eyebrow "Maker · Creative · Human", title + subtitle via SplitText, CTA text-link
+- **Entry**: Highly overlapped GSAP timeline (~1.1s total). All elements start within 0.3s of each other
+- **Scroll**: bg scales, all decorative elements fade out
+
+### App Layout (`app/app.vue`)
+- **ScrollSmoother**: desktop-only (>768px), disabled on prefers-reduced-motion, dynamic import to avoid SSR error
+- **Scrollbar**: Hidden globally (webkit: display:none, Firefox: scrollbar-width:none, IE: -ms-overflow-style:none). Page stays scrollable
+- **State sync**: `useState('smoother')` ensures smoother created before ScrollTrigger instances
+
+### Custom Cursor (`app/components/CustomCursor.vue`)
+- 3 elements: dot (4px, 30% opacity), ring (36px, backdrop-filter: invert(1)), trail (68px, border-only)
+- Click-hold: 3 circles shrink to 0.8 with staggered cascade, overlap -=0.12, all 0.25s
+- Interactive elements: cursor scales to 1.5 on hover
+- Uses GSAP ticker for lerping, `isOverInteractive` flag for correct hover restore after click
