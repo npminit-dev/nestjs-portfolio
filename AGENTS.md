@@ -104,6 +104,48 @@ Create a professional, elegant personal website making extensive use of GSAP's m
   - Parallax effects and scroll-triggered animations
   - Contact link at the bottom (must scroll through to find it)
 
+### Home Page Sections (below Hero)
+
+**Design principle**: Each section transitions smoothly into the next using ScrollTrigger pin + scrub or parallax. Sections feel continuous, not like page breaks.
+
+#### Section 1 — KPI Bar ("Impact in Numbers")
+- Horizontal bar with 3-4 key metrics that count up on scroll-enter
+- Metrics:
+  - **98+** — Lighthouse score
+  - **4** — production clients served
+  - **3+** — years shipping
+  - **AI-driven** — development accelerated with AI agents and custom tooling (agents, MCP servers, automated workflows)
+- Animation: numbers animate into view (count-up), bar may have subtle gradient background
+
+#### Section 2 — Value Prop ("What I Do" / Roles)
+- 3 cards or columns, each describing a role/domain with punchy results-oriented copy
+- Roles (no specific tech names):
+  - **Web Developer** — "High-performance web apps that score 98+ on Lighthouse"
+  - **Mobile Developer** — "Cross-platform mobile experiences, from concept to store"
+  - **Blockchain Developer** — "Smart contracts and dApps with production-grade security"
+  - **AI-Augmented Developer** — "AI-accelerated delivery pipelines that cut dev time by 67%"
+- Additional note at bottom: **"Strong foundations in algorithms, OOP, and software design — principles that transcend any framework."**
+- Animation: cards enter with stagger, subtle lift on hover
+
+#### Section 3 — Impact ("Selected Work")
+- 3 projects in vertical layout, each with:
+  - Project name + one-line description
+  - Key measurable outcome (e.g., "5 screens in 1 week", "Real-time BI dashboards", "Production staking platform")
+- Animation: scroll reveal (clip-path, opacity, or translate as user scrolls)
+
+#### Section 4 — CTA ("Let's Build")
+- Full-width section, crimson background, white text
+- Simple message + link to `/contact`
+- No decorative elements — minimal, intentional
+- Animation: background expands from center as it pins into view; previous content compresses upward
+
+### Section Transitions
+- Each section activates when it reaches a certain scroll position
+- Use ScrollTrigger with scrub for continuous, connected feel
+- Avoid hard breaks — overlapping animations, content fades/translates as next section enters
+- Background colors or subtle gradient shifts signal section changes
+- All animations respect `prefers-reduced-motion`
+
 ### Footer
 - Elegant, minimal footer with copyright and small social icons
 - Can be fixed at bottom or static at page end
