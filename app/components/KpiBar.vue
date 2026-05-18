@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
@@ -7,6 +7,11 @@ import { SplitText } from 'gsap/SplitText'
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const sectionRef = ref<HTMLElement | null>(null)
+const phraseEl = ref<HTMLElement | null>(null)
+const orbRef = ref<HTMLElement | null>(null)
+const orbCorner1Ref = ref<HTMLElement | null>(null)
+const orbCorner2Ref = ref<HTMLElement | null>(null)
+const specialCardRef = ref<HTMLElement | null>(null)
 let ctx: gsap.Context | null = null
 
 const displayValues = ref([0, 0, 0])
@@ -21,16 +26,98 @@ const metrics = [
   { value: 3, suffix: '+', label: 'Years Shipping', index: 2 },
 ]
 
+const phrases = [
+  'Measurable results from every project.',
+  'AI-accelerated delivery with custom tooling.',
+  'Agent-based automation and MCP servers.',
+  'Production-grade quality on every ship.',
+]
+
+const currentIndex = ref(0)
+let cycleTimer: ReturnType<typeof setTimeout> | null = null
+let hasCycleStarted = false
+
+function onMouseMove(e: MouseEvent) {
+  if (!specialCardRef.value || !orbRef.value) return
+
+  const cardRect = specialCardRef.value.getBoundingClientRect()
+  const cx = cardRect.left + cardRect.width / 2
+  const cy = cardRect.top + cardRect.height / 2
+
+  const dx = e.clientX - cx
+  const dy = e.clientY - cy
+  const dist = Math.sqrt(dx * dx + dy * dy)
+
+  const maxDist = Math.min(window.innerWidth, window.innerHeight) * 0.6
+  let progress = gsap.utils.clamp(0, 1, 1 - dist / maxDist)
+  progress = progress * progress
+
+  gsap.to(orbRef.value, {
+    scale: 0.7 + progress * 1.3,
+    opacity: 0.5 + progress * 0.5,
+    duration: 0.8,
+    ease: 'power2.out',
+    overwrite: 'auto',
+  })
+
+  gsap.to([orbCorner1Ref.value, orbCorner2Ref.value], {
+    scale: 0.5 + progress * 1.0,
+    opacity: 0.15 + progress * 0.45,
+    duration: 0.8,
+    ease: 'power2.out',
+    overwrite: 'auto',
+  })
+}
+
+function onMouseLeave() {
+  gsap.to(orbRef.value, {
+    scale: 0.7,
+    opacity: 0.5,
+    duration: 0.8,
+    ease: 'power2.out',
+    overwrite: 'auto',
+  })
+
+  gsap.to([orbCorner1Ref.value, orbCorner2Ref.value], {
+    scale: 0.5,
+    opacity: 0.15,
+    duration: 0.8,
+    ease: 'power2.out',
+    overwrite: 'auto',
+  })
+}
+
+function scheduleCycle() {
+  cycleTimer = setTimeout(() => cycleForward(), 4000)
+}
+
+function cycleForward() {
+  gsap.to(phraseEl.value, {
+    y: -16,
+    opacity: 0,
+    duration: 0.5,
+    ease: 'power2.in',
+    onComplete: () => {
+      currentIndex.value = (currentIndex.value + 1) % phrases.length
+      nextTick(() => {
+        gsap.fromTo(phraseEl.value,
+          { y: 16, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', onComplete: () => scheduleCycle() }
+        )
+      })
+    }
+  })
+}
+
 onMounted(() => {
   ctx = gsap.context(() => {
+    gsap.set('.kpi-orb', { scale: 0.7, opacity: 0.5 })
+    gsap.set('.kpi-orb-corner--left', { xPercent: -50, yPercent: 50, scale: 0.5, opacity: 0.15 })
+    gsap.set('.kpi-orb-corner--right', { xPercent: 50, yPercent: 50, scale: 0.5, opacity: 0.15 })
+
     const titleSplit = SplitText.create('.kpi-title', {
       type: 'chars',
       charsClass: 'title-char'
-    })
-
-    const descSplit = SplitText.create('.kpi-description', {
-      type: 'chars',
-      charsClass: 'desc-char'
     })
 
     const tl = gsap.timeline({
@@ -40,13 +127,6 @@ onMounted(() => {
         toggleActions: 'play none none reverse',
       }
     })
-
-    tl.from('.kpi-orb', {
-      scale: 0,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power3.out',
-    }, 0)
 
     tl.from('.kpi-header .section-label', {
       y: 20,
@@ -69,7 +149,7 @@ onMounted(() => {
       ease: 'power3.out',
     }, 0.6)
 
-    tl.from('.kpi-card', {
+    tl.from('.kpi-card:not(.kpi-card--special)', {
       scale: 0,
       opacity: 0,
       stagger: 0.08,
@@ -77,12 +157,26 @@ onMounted(() => {
       ease: 'power3.out',
     }, 0.85)
 
-    tl.from(descSplit.chars, {
-      autoAlpha: 0,
-      duration: 0.25,
-      stagger: 0.012,
-      ease: 'power2.out',
+    tl.from('.kpi-card--special', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.45,
+      ease: 'power3.out',
+    }, 1.09)
+
+    tl.from('.kpi-phrase', {
+      y: 16,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power3.out',
     }, 1.2)
+
+    tl.call(() => {
+      if (!hasCycleStarted) {
+        hasCycleStarted = true
+        scheduleCycle()
+      }
+    }, [], 1.9)
 
     const counters: Counter[] = metrics.map(() => ({ current: 0 }))
 
@@ -97,16 +191,24 @@ onMounted(() => {
       }, 0.85)
     })
   }, sectionRef.value)
+
+  sectionRef.value?.addEventListener('mousemove', onMouseMove)
+  sectionRef.value?.addEventListener('mouseleave', onMouseLeave)
 })
 
 onUnmounted(() => {
   ctx?.revert()
+  if (cycleTimer) clearTimeout(cycleTimer)
+  sectionRef.value?.removeEventListener('mousemove', onMouseMove)
+  sectionRef.value?.removeEventListener('mouseleave', onMouseLeave)
 })
 </script>
 
 <template>
   <section ref="sectionRef" class="kpi-section">
-    <div class="kpi-orb" />
+    <div class="kpi-orb-wrap">
+      <div ref="orbRef" class="kpi-orb" />
+    </div>
     <div class="container">
       <div class="kpi-header">
         <span class="section-label">Impact in Numbers</span>
@@ -127,7 +229,7 @@ onUnmounted(() => {
           <span class="kpi-label">{{ metric.label }}</span>
         </div>
 
-        <div class="kpi-card kpi-card--special">
+        <div ref="specialCardRef" class="kpi-card kpi-card--special">
           <div class="kpi-card-body">
             <span class="kpi-value kpi-value--accent">AI-Driven</span>
             <span class="kpi-accent-dot" />
@@ -136,11 +238,13 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <p class="kpi-description">
-        Measurable results from every project. AI-accelerated delivery with
-        custom tooling and agent-based automation.
-      </p>
+      <div class="kpi-phrases">
+        <p ref="phraseEl" class="kpi-phrase" v-text="phrases[currentIndex]"></p>
+      </div>
     </div>
+
+    <div ref="orbCorner1Ref" class="kpi-orb-corner kpi-orb-corner--left" />
+    <div ref="orbCorner2Ref" class="kpi-orb-corner kpi-orb-corner--right" />
   </section>
 </template>
 
@@ -160,21 +264,50 @@ onUnmounted(() => {
   z-index: 1;
 }
 
-.kpi-orb {
+.kpi-orb-wrap {
   position: absolute;
   top: -30%;
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.kpi-orb {
   width: min(600px, 80vw);
   height: min(600px, 80vw);
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(185, 28, 60, 0.06) 0%,
+    rgba(185, 28, 60, 0.08) 0%,
     transparent 70%
   );
+  transform-origin: center center;
+}
+
+.kpi-orb-corner {
+  position: absolute;
+  width: min(600px, 80vw);
+  height: min(600px, 80vw);
+  border-radius: 50%;
   pointer-events: none;
   z-index: 0;
+  transform-origin: center center;
+  background: radial-gradient(
+    circle,
+    rgba(185, 28, 60, 0.08) 0%,
+    transparent 70%
+  );
+}
+
+.kpi-orb-corner--left {
+  left: 0;
+  bottom: 0;
+}
+
+.kpi-orb-corner--right {
+  right: 0;
+  bottom: 0;
 }
 
 .kpi-header {
@@ -233,6 +366,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-2xl) var(--space-lg);
   background: rgba(20, 20, 22, 0.5);
@@ -257,8 +391,6 @@ onUnmounted(() => {
     rgba(185, 28, 60, 0.04) 100%
   );
   position: relative;
-  overflow: hidden;
-  transition: transform var(--duration-slower) var(--ease-elegant);
 }
 
 /* Hover gradient overlay — smooth crossfade */
@@ -274,10 +406,6 @@ onUnmounted(() => {
   opacity: 0;
   transition: opacity var(--duration-slower) var(--ease-elegant);
   pointer-events: none;
-}
-
-.kpi-card--special:hover {
-  transform: translateY(-2px);
 }
 
 .kpi-card--special:hover::after {
@@ -314,6 +442,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
 }
 
@@ -347,17 +476,22 @@ onUnmounted(() => {
   letter-spacing: 0.12em;
 }
 
-.kpi-description {
+.kpi-phrases {
+  position: relative;
   max-width: 600px;
   margin: 0 auto;
+  height: 1.7em;
+}
+
+.kpi-phrase {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
   text-align: center;
   font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-secondary);
-}
-
-:deep(.desc-char) {
-  display: inline-block;
 }
 
 @media (max-width: 768px) {
