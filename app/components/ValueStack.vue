@@ -3,6 +3,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
+import catDesktop from '~/assets/img/value-cat-desktop.webp'
+import catDesktopSmall from '~/assets/img/value-cat-desktop-small.webp'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -97,19 +99,30 @@ onMounted(() => {
   mm.add('(prefers-reduced-motion: reduce)', () => {
     gsap.set([
       '.stack-header', '.stack-layer', '.stack-foundation',
-      '.stack-node',
+      '.stack-node', '.stack-cat',
     ], { y: 0, opacity: 1, scaleX: 1, scaleY: 1, x: 0, rotation: 0 })
   }, sectionRef.value as Element)
 
   mm.add('(prefers-reduced-motion: no-preference)', () => {
     ctx = gsap.context(() => {
-      const hiddenSel = hiddenSelector()
-      if (hiddenSel) gsap.set(hiddenSel, { x: 15, y: -60, opacity: 0, rotation: 4 })
-      if (hiddenSel) gsap.set(hiddenSel.split(',').map(s => s.trim() + ' .stack-node').join(','), { scale: 0, opacity: 0 })
+      const activeSel = activeSelector()
+      if (activeSel) gsap.set(activeSel, { x: 15, y: -60, opacity: 0, rotation: 4 })
+      if (activeSel) gsap.set(activeSel.split(',').map(s => s.trim() + ' .stack-node').join(','), { scale: 0, opacity: 0 })
 
       const headerSplit = SplitText.create('.stack-title', {
         type: 'chars',
         charsClass: 'stack-title-char',
+      })
+
+      gsap.from('.stack-cat', {
+        scrollTrigger: {
+          trigger: sectionRef.value,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        },
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power3.out',
       })
 
       gsap.from('.stack-label', {
@@ -208,10 +221,14 @@ onUnmounted(() => {
 
 <template>
   <section ref="sectionRef" class="stack-section">
+    <div class="stack-deco" aria-hidden="true" />
     <div class="container">
       <div class="stack-grid">
         <div class="stack-left">
-          <div class="stack-left-inner" />
+          <picture class="stack-cat-wrap">
+            <source media="(max-width: 768px)" :srcset="catDesktopSmall">
+            <img :src="catDesktop" alt="Cat" class="stack-cat">
+          </picture>
         </div>
 
         <div class="stack-right">
@@ -291,7 +308,7 @@ onUnmounted(() => {
 
       <div ref="foundationRef" class="stack-foundation">
         <div class="stack-foundation-symbol" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
             <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1" opacity="0.3" />
             <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.3" />
             <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.5" />
@@ -311,7 +328,7 @@ onUnmounted(() => {
 .stack-section {
   padding: var(--space-4xl) 0;
   position: relative;
-  background: var(--color-background);
+  background: rgba(10, 10, 11, 0.2);
 }
 
 .stack-section .container {
@@ -320,12 +337,32 @@ onUnmounted(() => {
   padding: 0 var(--container-padding);
 }
 
+.stack-deco {
+  position: absolute;
+  top: 50%;
+  right: -250px;
+  width: 500px;
+  height: 500px;
+  margin-top: -250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(185, 28, 60, 0.15), transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: -1;
+  animation: breathe 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
 /* ── Layout grid ── */
 .stack-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-3xl);
-  align-items: start;
+  align-items: center;
 }
 
 /* ── Left column ── */
@@ -333,9 +370,21 @@ onUnmounted(() => {
   position: relative;
 }
 
-.stack-left-inner {
+.stack-cat-wrap {
   position: sticky;
   top: 120px;
+  display: block;
+  line-height: 0;
+}
+
+.stack-cat {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  display: block;
+  filter: brightness(0.9);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, transparent 5%, black 40%);
+  mask-image: linear-gradient(to top, transparent 0%, transparent 5%, black 40%);
 }
 
 /* ── Right column ── */
@@ -456,6 +505,7 @@ onUnmounted(() => {
   padding: 6px var(--space-lg);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 14px;
+  opacity: 0;
   transition: background var(--duration-slower) var(--ease-elegant), border-color var(--duration-slower) var(--ease-elegant);
 }
 
@@ -590,6 +640,9 @@ onUnmounted(() => {
 /* ── Foundation card ── */
 .stack-foundation {
   margin-top: var(--space-lg);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 640px;
   display: flex;
   align-items: flex-start;
   gap: var(--space-md);
@@ -597,18 +650,18 @@ onUnmounted(() => {
   border-radius: var(--radius-lg);
   background: linear-gradient(
     135deg,
-    rgba(185, 28, 60, 0.04) 0%,
-    rgba(39, 39, 42, 0.06) 100%
+    rgba(185, 28, 60, 0.08) 0%,
+    rgba(39, 39, 42, 0.12) 100%
   );
   border-left: 2px solid var(--color-accent);
 }
 
 .stack-foundation-symbol {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   color: var(--color-accent);
-  margin-top: 2px;
+  align-self: center;
 }
 
 .stack-foundation-content {
