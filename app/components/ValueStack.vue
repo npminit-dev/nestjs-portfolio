@@ -21,11 +21,11 @@ const pool = [
   { id: '06', title: 'UI/UX Designer', description: 'Design systems and interfaces that balance beauty with usability', hue: 'secondary' },
 ]
 
-const visibleIndices = ref(new Set([0, 1, 2, 3]))
+const visibleIndices = ref(new Set([0, 1, 2, 3, 4, 5]))
 
 const canAdd = computed(() => visibleIndices.value.size < pool.length)
-const canRemove = computed(() => visibleIndices.value.size > 1)
-const isModified = computed(() => visibleIndices.value.size !== 4)
+const canRemove = computed(() => visibleIndices.value.size > 0)
+const hasCards = computed(() => visibleIndices.value.size > 0)
 
 const nextIdx = computed(() => {
   for (let i = 0; i < pool.length; i++) {
@@ -43,7 +43,7 @@ function addLayer() {
   const el = document.querySelector(`[data-i="${idx}"]`) as HTMLElement | undefined
   if (!el) return
   gsap.fromTo(el,
-    { x: 15, y: -60, opacity: 0, rotation: -4 },
+    { x: 15, y: -60, opacity: 0, rotation: 4 },
     { x: 0, y: 0, opacity: 1, rotation: 0, duration: 0.5, ease: 'power3.out', transformOrigin: 'top right' }
   )
   const dot = el.querySelector('.stack-node')
@@ -57,7 +57,7 @@ function removeLayer() {
   const el = document.querySelector(`[data-i="${idx}"]`) as HTMLElement | undefined
   if (!el) return
   gsap.to(el, {
-    x: 15, y: -60, opacity: 0, rotation: -4,
+    x: 15, y: -60, opacity: 0, rotation: 4,
     duration: 0.35, ease: 'power3.in', transformOrigin: 'top right',
   })
   const dot = el.querySelector('.stack-node')
@@ -65,19 +65,18 @@ function removeLayer() {
 }
 
 function resetLayers() {
-  if (!isModified.value) return
-  const toRemove = [...visibleIndices.value].filter(i => i > 3).sort((a, b) => b - a)
-  toRemove.forEach(idx => {
+  if (!hasCards.value) return
+  ;[...visibleIndices.value].forEach(idx => {
     const el = document.querySelector(`[data-i="${idx}"]`) as HTMLElement | undefined
     if (!el) return
     gsap.to(el, {
-      x: 15, y: -60, opacity: 0, rotation: -4,
+      x: 15, y: -60, opacity: 0, rotation: 4,
       duration: 0.3, ease: 'power3.in', transformOrigin: 'top right',
     })
     const dot = el.querySelector('.stack-node')
     if (dot) gsap.to(dot, { scale: 0, opacity: 0, duration: 0.15 })
   })
-  visibleIndices.value = new Set([0, 1, 2, 3])
+  visibleIndices.value = new Set()
 }
 
 function activeSelector() {
@@ -105,7 +104,7 @@ onMounted(() => {
   mm.add('(prefers-reduced-motion: no-preference)', () => {
     ctx = gsap.context(() => {
       const hiddenSel = hiddenSelector()
-      if (hiddenSel) gsap.set(hiddenSel, { x: 15, y: -60, opacity: 0, rotation: -4 })
+      if (hiddenSel) gsap.set(hiddenSel, { x: 15, y: -60, opacity: 0, rotation: 4 })
       if (hiddenSel) gsap.set(hiddenSel.split(',').map(s => s.trim() + ' .stack-node').join(','), { scale: 0, opacity: 0 })
 
       const headerSplit = SplitText.create('.stack-title', {
@@ -138,7 +137,7 @@ onMounted(() => {
       })
 
       gsap.fromTo(activeSelector(),
-        { x: 15, y: -60, opacity: 0, rotation: -4 },
+        { x: 15, y: -60, opacity: 0, rotation: 4 },
         {
           scrollTrigger: {
             trigger: sectionRef.value,
@@ -219,7 +218,7 @@ onUnmounted(() => {
           <header class="stack-header">
             <span class="stack-label">Capabilities Stack</span>
             <h2 class="stack-title">
-              Four layers of delivery
+              Six layers of delivery
             </h2>
           </header>
 
@@ -242,15 +241,30 @@ onUnmounted(() => {
             </button>
             <button
               class="stack-btn"
-              :disabled="!isModified"
+              :disabled="!hasCards"
               @click="resetLayers"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg>
               Reset
             </button>
+            <p class="stack-status">
+              <template v-if="visibleIndices.size === 0">Stack cleared</template>
+              <template v-else>{{ visibleIndices.size }} of {{ pool.length }} layers active</template>
+            </p>
           </div>
 
           <div class="stack-tray">
+            <div v-if="visibleIndices.size === 0" class="stack-placeholder">
+              <div class="stack-placeholder-icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.3">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M9 12h6" />
+                  <path d="M12 9v6" />
+                </svg>
+              </div>
+              <p class="stack-placeholder-text">All capabilities collapsed</p>
+              <p class="stack-placeholder-hint">Click <strong>Add layer</strong> to rebuild</p>
+            </div>
             <div class="stack-tray-group">
               <article
                 v-for="(layer, i) in pool"
@@ -335,6 +349,60 @@ onUnmounted(() => {
   border-radius: 20px;
   padding: var(--space-md);
   overflow: hidden;
+  position: relative;
+}
+
+.stack-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-3xl) var(--space-lg);
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  animation: placeholderIn 0.3s ease 0.4s forwards;
+}
+
+@keyframes placeholderIn {
+  to { opacity: 1; }
+}
+
+/* ── Stack status ── */
+.stack-status {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-tiny);
+  color: var(--color-text-muted);
+  letter-spacing: 0.03em;
+  align-self: center;
+}
+
+.stack-placeholder-icon {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.stack-placeholder-text {
+  font-family: var(--font-heading);
+  font-size: var(--text-body-lg);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.stack-placeholder-hint {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.stack-placeholder-hint strong {
+  color: var(--color-accent);
+  font-weight: var(--font-medium);
 }
 
 /* ── Header ── */
@@ -379,18 +447,20 @@ onUnmounted(() => {
 .stack-tray-group {
   display: flex;
   flex-direction: column-reverse;
+  gap: 6px;
 }
 
 /* ── Each layer card ── */
 .stack-layer {
   position: relative;
   padding: 6px var(--space-lg);
-  margin-bottom: 6px;
-  transition: background var(--duration-slower) var(--ease-elegant);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  transition: background var(--duration-slower) var(--ease-elegant), border-color var(--duration-slower) var(--ease-elegant);
 }
 
-.stack-layer:last-child {
-  margin-bottom: 0;
+.stack-layer:hover {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .stack-layer--accent {
@@ -425,35 +495,19 @@ onUnmounted(() => {
   );
 }
 
-.stack-layer:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  right: var(--space-lg);
-  width: calc(100% - var(--space-lg) * 2);
-  height: 1px;
-  background: linear-gradient(
-    to left,
-    rgba(185, 28, 60, 0.08) 0%,
-    rgba(39, 39, 42, 0.12) 100%
-  );
-}
-
 .stack-layer-body {
   display: flex;
   align-items: flex-start;
   gap: var(--space-md);
-  direction: rtl;
-  text-align: right;
 }
 
 .stack-layer-node-wrap {
   flex-shrink: 0;
   width: 16px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding-top: 4px;
+  align-self: center;
 }
 
 .stack-node {
@@ -461,8 +515,9 @@ onUnmounted(() => {
   height: 6px;
   border-radius: 50%;
   background: var(--color-accent);
-  opacity: 0.5;
-  box-shadow: 0 0 6px rgba(185, 28, 60, 0.15);
+  opacity: 0.6;
+  box-shadow: 0 0 8px rgba(185, 28, 60, 0.5), 0 0 16px rgba(185, 28, 60, 0.2);
+  filter: blur(0.4px);
   position: relative;
   z-index: 1;
 }
@@ -595,14 +650,7 @@ onUnmounted(() => {
   }
 
   .stack-layer-body {
-    direction: ltr;
     text-align: left;
-  }
-
-  .stack-layer:not(:last-child)::after {
-    right: var(--space-md);
-    width: calc(100% - var(--space-md) * 2);
-    bottom: -2px;
   }
 }
 
@@ -613,13 +661,10 @@ onUnmounted(() => {
 
   .stack-layer {
     padding: 4px var(--space-md);
-    margin-bottom: 4px;
   }
 
-  .stack-layer:not(:last-child)::after {
-    right: var(--space-md);
-    width: calc(100% - var(--space-md) * 2);
-    bottom: -2px;
+  .stack-tray-group {
+    gap: 4px;
   }
 
   .stack-tray {
@@ -637,7 +682,6 @@ onUnmounted(() => {
 
   .stack-layer-node-wrap {
     width: 12px;
-    padding-top: 3px;
   }
 
   .stack-node {
