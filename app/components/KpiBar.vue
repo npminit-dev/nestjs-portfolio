@@ -57,7 +57,7 @@ function onMouseMove(e: MouseEvent) {
 
   gsap.to(orbRef.value, {
     scale: 0.7 + progress * 1.3,
-    opacity: 0.5 + progress * 0.5,
+    opacity: 0.7 + progress * 0.3,
     duration: 0.8,
     ease: 'power2.out',
     overwrite: 'auto',
@@ -65,7 +65,7 @@ function onMouseMove(e: MouseEvent) {
 
   gsap.to([orbCorner1Ref.value, orbCorner2Ref.value], {
     scale: 0.5 + progress * 1.0,
-    opacity: 0.15 + progress * 0.45,
+    opacity: 0.3 + progress * 0.5,
     duration: 0.8,
     ease: 'power2.out',
     overwrite: 'auto',
@@ -75,7 +75,7 @@ function onMouseMove(e: MouseEvent) {
 function onMouseLeave() {
   gsap.to(orbRef.value, {
     scale: 0.7,
-    opacity: 0.5,
+    opacity: 0.7,
     duration: 0.8,
     ease: 'power2.out',
     overwrite: 'auto',
@@ -83,7 +83,7 @@ function onMouseLeave() {
 
   gsap.to([orbCorner1Ref.value, orbCorner2Ref.value], {
     scale: 0.5,
-    opacity: 0.15,
+    opacity: 0.3,
     duration: 0.8,
     ease: 'power2.out',
     overwrite: 'auto',
@@ -133,9 +133,9 @@ function cycleForward() {
 
 onMounted(() => {
   ctx = gsap.context(() => {
-    gsap.set('.kpi-orb', { scale: 0.7, opacity: 0.5 })
-    gsap.set('.kpi-orb-corner--left', { xPercent: -50, yPercent: 50, scale: 0.5, opacity: 0.15 })
-    gsap.set('.kpi-orb-corner--right', { xPercent: 50, yPercent: 50, scale: 0.5, opacity: 0.15 })
+    gsap.set('.kpi-orb', { scale: 0.7, opacity: 0.7 })
+    gsap.set('.kpi-orb-corner--left', { xPercent: -50, yPercent: 50, scale: 0.5, opacity: 0.3 })
+    gsap.set('.kpi-orb-corner--right', { xPercent: 50, yPercent: 50, scale: 0.5, opacity: 0.3 })
     gsap.set('.phrase-progress', { scaleX: 0 })
 
     const titleSplit = SplitText.create('.kpi-title', {
@@ -167,7 +167,7 @@ onMounted(() => {
 
     tl.from('.kpi-cat', {
       opacity: 0,
-      duration: 0.6,
+      duration: 1.2,
       ease: 'power3.out',
     }, 0.6)
 
@@ -379,7 +379,7 @@ onUnmounted(() => {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(185, 28, 60, 0.08) 0%,
+    rgba(185, 28, 60, 0.15) 0%,
     transparent 70%
   );
   transform-origin: center center;
@@ -387,15 +387,15 @@ onUnmounted(() => {
 
 .kpi-orb-corner {
   position: absolute;
-  width: min(600px, 80vw);
-  height: min(600px, 80vw);
+  width: min(900px, 100vw);
+  height: min(900px, 100vw);
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
   transform-origin: center center;
   background: radial-gradient(
     circle,
-    rgba(185, 28, 60, 0.08) 0%,
+    rgba(185, 28, 60, 0.15) 0%,
     transparent 70%
   );
 }
@@ -430,6 +430,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 
 .kpi-cat {
