@@ -286,7 +286,7 @@ onUnmounted(() => {
               class="kpi-card"
             >
               <div class="kpi-value-wrap">
-                <svg class="kpi-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="kpi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <template v-if="metric.icon === 'shield'">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </template>
@@ -454,7 +454,7 @@ onUnmounted(() => {
 
 .section-label {
   display: inline-block;
-  font-size: var(--text-tiny);
+  font-size: var(--text-small);
   font-weight: var(--font-medium);
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -476,7 +476,7 @@ onUnmounted(() => {
 
 .kpi-title {
   font-family: var(--font-heading);
-  font-size: var(--text-h1);
+  font-size: var(--text-display);
   font-weight: var(--font-semibold);
   line-height: 1.25;
   color: var(--color-text-primary);
@@ -588,10 +588,10 @@ onUnmounted(() => {
 .kpi-card--special::before {
   content: '';
   position: absolute;
-  top: 10%;
+  top: 25%;
   left: -1px;
   width: 2px;
-  height: 80%;
+  height: 50%;
   background: var(--color-accent);
   opacity: 0.45;
   border-radius: 2px;
@@ -655,7 +655,7 @@ onUnmounted(() => {
 }
 
 .kpi-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -687,7 +687,7 @@ onUnmounted(() => {
   right: 0;
   margin: 0;
   text-align: left;
-  font-size: var(--text-body);
+  font-size: var(--text-body-lg);
   line-height: 1.7;
   color: var(--color-text-secondary);
 }
@@ -726,16 +726,16 @@ onUnmounted(() => {
     border-right: none;
   }
 
-  .kpi-value {
-    font-size: var(--text-h2);
+  .kpi-title {
+    font-size: var(--text-h1);
   }
 
-  .kpi-value--accent {
+  .kpi-value {
     font-size: var(--text-h3);
   }
 
-  .kpi-title {
-    font-size: var(--text-h2);
+  .kpi-value--accent {
+    font-size: var(--text-body-lg);
   }
 }
 
@@ -746,6 +746,38 @@ onUnmounted(() => {
 
   .kpi-cat {
     display: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .kpi-section .container {
+    max-width: 1400px;
+  }
+
+  .kpi-card {
+    gap: var(--space-sm);
+    padding: var(--space-lg) var(--space-lg);
+  }
+
+  .kpi-value {
+    font-size: var(--text-h1);
+  }
+
+  .kpi-value--accent {
+    font-size: var(--text-h2);
+  }
+
+  .kpi-value-wrap {
+    gap: var(--space-sm);
+  }
+
+  .kpi-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .kpi-label {
+    font-size: var(--text-small);
   }
 }
 </style>
