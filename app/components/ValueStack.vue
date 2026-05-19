@@ -309,9 +309,9 @@ onUnmounted(() => {
       <div ref="foundationRef" class="stack-foundation">
         <div class="stack-foundation-symbol" aria-hidden="true">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1" opacity="0.3" />
-            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.3" />
-            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.5" />
+            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1" opacity="0.6" />
+            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.6" />
+            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.8" />
           </svg>
         </div>
         <div class="stack-foundation-content">
@@ -373,15 +373,18 @@ onUnmounted(() => {
 .stack-cat-wrap {
   position: sticky;
   top: 120px;
-  display: block;
-  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stack-cat {
-  width: 100%;
+  display: block;
+  max-width: 100%;
+  max-height: 800px;
+  width: auto;
   height: auto;
   border-radius: 20px;
-  display: block;
   filter: brightness(0.9);
   -webkit-mask-image: linear-gradient(to top, transparent 0%, transparent 5%, black 40%);
   mask-image: linear-gradient(to top, transparent 0%, transparent 5%, black 40%);
