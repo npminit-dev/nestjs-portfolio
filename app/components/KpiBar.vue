@@ -3,11 +3,14 @@ import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
-
+import catDesktop from '~/assets/img/kpi-cat-desktop.webp'
+import catDesktopSmall from '~/assets/img/kpi-cat-desktop-small.webp'
+import catMobile from '~/assets/img/kpi-cat-mobile.webp'
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const sectionRef = ref<HTMLElement | null>(null)
 const phraseEl = ref<HTMLElement | null>(null)
+const progressBar = ref<HTMLElement | null>(null)
 const orbRef = ref<HTMLElement | null>(null)
 const orbCorner1Ref = ref<HTMLElement | null>(null)
 const orbCorner2Ref = ref<HTMLElement | null>(null)
@@ -21,9 +24,9 @@ interface Counter {
 }
 
 const metrics = [
-  { value: 98, suffix: '+', label: 'Lighthouse Score', index: 0 },
-  { value: 4, suffix: '', label: 'Production Clients', index: 1 },
-  { value: 3, suffix: '+', label: 'Years Shipping', index: 2 },
+  { value: 98, suffix: '+', label: 'Lighthouse Score', index: 0, icon: 'shield' },
+  { value: 4, suffix: '', label: 'Production Clients', index: 1, icon: 'briefcase' },
+  { value: 3, suffix: '+', label: 'Years Shipping', index: 2, icon: 'calendar' },
 ]
 
 const phrases = [
@@ -87,22 +90,41 @@ function onMouseLeave() {
   })
 }
 
+function startProgressBar() {
+  if (progressBar.value) {
+    gsap.set(progressBar.value, { scaleX: 0 })
+    gsap.to(progressBar.value, {
+      scaleX: 1,
+      duration: 4,
+      ease: 'none',
+    })
+  }
+}
+
 function scheduleCycle() {
   cycleTimer = setTimeout(() => cycleForward(), 4000)
 }
 
 function cycleForward() {
+  if (progressBar.value) {
+    gsap.killTweensOf(progressBar.value)
+    gsap.to(progressBar.value, {
+      scaleX: 0,
+      duration: 0.4,
+      ease: 'power2.in',
+    })
+  }
   gsap.to(phraseEl.value, {
-    y: -16,
     opacity: 0,
-    duration: 0.5,
+    duration: 0.4,
     ease: 'power2.in',
     onComplete: () => {
       currentIndex.value = (currentIndex.value + 1) % phrases.length
       nextTick(() => {
+        startProgressBar()
         gsap.fromTo(phraseEl.value,
-          { y: 16, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', onComplete: () => scheduleCycle() }
+          { opacity: 0 },
+          { opacity: 1, duration: 0.5, ease: 'power2.out', onComplete: () => scheduleCycle() }
         )
       })
     }
@@ -114,6 +136,7 @@ onMounted(() => {
     gsap.set('.kpi-orb', { scale: 0.7, opacity: 0.5 })
     gsap.set('.kpi-orb-corner--left', { xPercent: -50, yPercent: 50, scale: 0.5, opacity: 0.15 })
     gsap.set('.kpi-orb-corner--right', { xPercent: 50, yPercent: 50, scale: 0.5, opacity: 0.15 })
+    gsap.set('.phrase-progress', { scaleX: 0 })
 
     const titleSplit = SplitText.create('.kpi-title', {
       type: 'chars',
@@ -142,6 +165,12 @@ onMounted(() => {
       ease: 'power2.out',
     }, 0.4)
 
+    tl.from('.kpi-cat', {
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power3.out',
+    }, 0.6)
+
     tl.from('.kpi-grid', {
       opacity: 0,
       duration: 0.6,
@@ -150,7 +179,7 @@ onMounted(() => {
 
     tl.from('.kpi-card:not(.kpi-card--special)', {
       opacity: 0,
-      stagger: 0.08,
+      stagger: { each: 0.08, from: 'start', ease: 'power2.out', amount: 0.35 },
       duration: 0.45,
       ease: 'power3.out',
     }, 0.85)
@@ -162,7 +191,6 @@ onMounted(() => {
     }, 1.09)
 
     tl.from('.kpi-phrase', {
-      y: 16,
       opacity: 0,
       duration: 0.6,
       ease: 'power3.out',
@@ -171,6 +199,7 @@ onMounted(() => {
     tl.call(() => {
       if (!hasCycleStarted) {
         hasCycleStarted = true
+        startProgressBar()
         scheduleCycle()
       }
     }, [], 1.9)
@@ -181,12 +210,39 @@ onMounted(() => {
       tl.to(counter, {
         current: metrics[i].value,
         duration: 1.8,
-        ease: 'power2.out',
+        ease: 'none',
         onUpdate: () => {
           displayValues.value[i] = Math.round(counter.current)
         }
       }, 0.85)
     })
+
+    tl.to('.kpi-value', {
+      scale: 1.06,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      stagger: 0.04,
+      ease: 'power1.inOut',
+    }, '>-0.1')
+
+    gsap.to('.kpi-accent-dot', {
+      opacity: 0.15,
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+    })
+
+    gsap.to([orbCorner1Ref.value, orbCorner2Ref.value], {
+      y: '+=6',
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+    })
+
+
   }, sectionRef.value)
 
   sectionRef.value?.addEventListener('mousemove', onMouseMove)
@@ -206,37 +262,74 @@ onUnmounted(() => {
     <div class="kpi-orb-wrap">
       <div ref="orbRef" class="kpi-orb" />
     </div>
+    <svg class="kpi-noise" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
+      <filter id="kpiNoiseFilter">
+        <feTurbulence type="fractalNoise" baseFrequency="3.2" numOctaves="3" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#kpiNoiseFilter)" opacity="0.02" />
+    </svg>
     <div class="container">
-      <div class="kpi-header">
-        <span class="section-label">Impact in Numbers</span>
-        <h2 class="kpi-title">
-          Code that ships.<br />Products that perform.
-        </h2>
-      </div>
+      <div class="kpi-main">
+        <div class="kpi-left">
+          <div class="kpi-header">
+            <span class="section-label">Impact in Numbers</span>
+            <h2 class="kpi-title">
+              Code that ships.<br />Products that perform.
+            </h2>
+          </div>
 
-      <div class="kpi-grid">
-        <div
-          v-for="metric in metrics"
-          :key="metric.label"
-          class="kpi-card"
-        >
-          <span class="kpi-value">
-            {{ displayValues[metric.index] }}{{ metric.suffix }}
-          </span>
-          <span class="kpi-label">{{ metric.label }}</span>
-        </div>
+          <div class="kpi-grid">
+            <div
+              v-for="metric in metrics"
+              :key="metric.label"
+              class="kpi-card"
+            >
+              <div class="kpi-value-wrap">
+                <svg class="kpi-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <template v-if="metric.icon === 'shield'">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </template>
+                  <template v-else-if="metric.icon === 'briefcase'">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </template>
+                  <template v-else-if="metric.icon === 'calendar'">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </template>
+                </svg>
+                <span class="kpi-value">
+                  {{ displayValues[metric.index] }}{{ metric.suffix }}
+                </span>
+              </div>
+              <span class="kpi-label">{{ metric.label }}</span>
+            </div>
 
-        <div ref="specialCardRef" class="kpi-card kpi-card--special">
-          <div class="kpi-card-body">
-            <span class="kpi-value kpi-value--accent">AI-Driven</span>
-            <span class="kpi-accent-dot" />
-            <span class="kpi-label">Development Accelerated</span>
+            <div ref="specialCardRef" class="kpi-card kpi-card--special">
+              <div class="kpi-card-body">
+                <span class="kpi-value kpi-value--accent">AI-Driven</span>
+                <span class="kpi-accent-dot" />
+                <span class="kpi-label">Development Accelerated</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-phrases">
+            <p ref="phraseEl" class="kpi-phrase" v-text="phrases[currentIndex]"></p>
+            <span ref="progressBar" class="phrase-progress" aria-hidden="true" />
           </div>
         </div>
-      </div>
 
-      <div class="kpi-phrases">
-        <p ref="phraseEl" class="kpi-phrase" v-text="phrases[currentIndex]"></p>
+        <div class="kpi-right">
+          <picture class="kpi-cat">
+            <source :srcset="catDesktop" media="(min-width: 1200px)" />
+            <source :srcset="catDesktopSmall" media="(min-width: 768px)" />
+            <img :src="catMobile" alt="" width="400" height="400" aria-hidden="true" />
+          </picture>
+        </div>
       </div>
     </div>
 
@@ -259,6 +352,16 @@ onUnmounted(() => {
   padding: 0 var(--container-padding);
   position: relative;
   z-index: 1;
+}
+
+.kpi-noise {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 0;
 }
 
 .kpi-orb-wrap {
@@ -308,7 +411,45 @@ onUnmounted(() => {
 }
 
 .kpi-header {
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.kpi-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.kpi-left {
+  min-width: 0;
+}
+
+.kpi-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-cat {
+  width: 100%;
+  height: auto;
+  opacity: 0.85;
+  mask-image:
+    linear-gradient(to right, black 60%, transparent 100%),
+    linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to right, black 60%, transparent 100%),
+    linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.kpi-cat img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .section-label {
@@ -347,6 +488,7 @@ onUnmounted(() => {
 }
 
 .kpi-grid {
+  position: relative;
   display: flex;
   margin-bottom: var(--space-2xl);
   border-radius: var(--radius-lg);
@@ -358,19 +500,52 @@ onUnmounted(() => {
   transform-origin: center center;
 }
 
+.kpi-grid::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -25%;
+  width: 60%;
+  height: 100%;
+  background: radial-gradient(ellipse at top right, rgba(185, 28, 60, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .kpi-card {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-2xl) var(--space-lg);
+  gap: 4px;
+  padding: var(--space-xl) var(--space-md);
   background: rgba(20, 20, 22, 0.2);
   text-align: center;
   transition: background var(--duration-normal) var(--ease-default);
   transform-origin: center center;
   border-right: 1px solid rgba(39, 39, 42, 0.3);
+}
+
+.kpi-card:not(.kpi-card--special)::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  opacity: 0;
+  transition:
+    width var(--duration-slower) var(--ease-elegant),
+    opacity var(--duration-slower) var(--ease-elegant);
+  transform: translateX(-50%);
+}
+
+.kpi-card:not(.kpi-card--special):hover::before {
+  width: 60%;
+  opacity: 0.6;
 }
 
 .kpi-card:last-child {
@@ -445,7 +620,7 @@ onUnmounted(() => {
 
 .kpi-value {
   font-family: var(--font-heading);
-  font-size: var(--text-display);
+  font-size: var(--text-h2);
   font-weight: var(--font-bold);
   color: var(--color-text-primary);
   line-height: 1;
@@ -453,7 +628,7 @@ onUnmounted(() => {
 }
 
 .kpi-value--accent {
-  font-size: var(--text-h1);
+  font-size: var(--text-h3);
   color: var(--color-accent);
   position: relative;
 }
@@ -466,8 +641,21 @@ onUnmounted(() => {
   opacity: 0.35;
 }
 
+.kpi-value-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.kpi-icon {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  opacity: 0.85;
+}
+
 .kpi-label {
-  font-size: var(--text-small);
+  font-size: 0.65rem;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -476,8 +664,21 @@ onUnmounted(() => {
 .kpi-phrases {
   position: relative;
   max-width: 600px;
-  margin: 0 auto;
+  margin-right: auto;
+  margin-left: 0;
   height: 1.7em;
+}
+
+.phrase-progress {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0.35;
 }
 
 .kpi-phrase {
@@ -485,7 +686,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   margin: 0;
-  text-align: center;
+  text-align: left;
   font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-secondary);
@@ -496,13 +697,24 @@ onUnmounted(() => {
     padding: var(--space-3xl) 0;
   }
 
+  .kpi-main {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+
+  .kpi-cat {
+    max-width: 260px;
+    margin: 0 auto;
+    opacity: 0.7;
+  }
+
   .kpi-grid {
     flex-wrap: wrap;
   }
 
   .kpi-card {
     flex: 0 0 50%;
-    padding: var(--space-xl) var(--space-md);
+    padding: var(--space-lg) var(--space-sm);
   }
 
   .kpi-card:nth-child(2) {
@@ -515,11 +727,11 @@ onUnmounted(() => {
   }
 
   .kpi-value {
-    font-size: var(--text-h1);
+    font-size: var(--text-h2);
   }
 
   .kpi-value--accent {
-    font-size: var(--text-h2);
+    font-size: var(--text-h3);
   }
 
   .kpi-title {
@@ -530,6 +742,10 @@ onUnmounted(() => {
 @media (max-width: 480px) {
   .kpi-card {
     flex: 0 0 100%;
+  }
+
+  .kpi-cat {
+    display: none;
   }
 }
 </style>
