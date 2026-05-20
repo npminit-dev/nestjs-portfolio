@@ -54,6 +54,7 @@ export default defineEventHandler(async (event) => {
     await transporter.sendMail({
       from: process.env.CONTACT_EMAIL_FROM || process.env.CONTACT_EMAIL_USER,
       to: process.env.CONTACT_EMAIL_TO,
+      replyTo: email,
       subject: `Portfolio Contact — ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
       html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong></p><p>${message}</p>`,
