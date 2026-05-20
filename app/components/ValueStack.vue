@@ -486,7 +486,7 @@ onUnmounted(() => {
   line-height: 1.25;
   color: var(--color-text-primary);
   margin: 0;
-  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 /* ── Stack group (column-reverse = first card at bottom) ── */

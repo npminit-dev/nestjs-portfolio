@@ -140,7 +140,7 @@ onUnmounted(() => {
   color: var(--color-text-primary);
   line-height: 1.25;
   margin: 0 0 var(--space-md);
-  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .cta-text {

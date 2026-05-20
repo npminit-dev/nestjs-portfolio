@@ -296,7 +296,7 @@ onUnmounted(() => {
   line-height: 1.15;
   color: var(--color-text-primary);
   margin-bottom: var(--space-xl);
-  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .hero-subtitle {

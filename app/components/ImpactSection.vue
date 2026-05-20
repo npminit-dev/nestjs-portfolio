@@ -314,7 +314,7 @@ onUnmounted(() => {
   line-height: 1.25;
   color: var(--color-text-primary);
   margin: 0;
-  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 :deep(.impact-title-char) {
@@ -450,7 +450,7 @@ onUnmounted(() => {
   color: var(--color-text-secondary);
   margin: 0 0 var(--space-sm);
   max-width: 500px;
-  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .impact-item-outcome-wrap {
