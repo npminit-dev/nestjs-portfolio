@@ -49,6 +49,7 @@ onMounted(() => {
     gsap.set('.impact-item', { opacity: 0, clipPath: 'inset(0 100% 0 0)' })
     gsap.set('.impact-item-dot', { scale: 0 })
     gsap.set('.impact-item-outcome-bar', { width: 0 })
+    gsap.set('.impact-cat-wrap', { opacity: 0 })
 
     const titleSplit = SplitText.create('.impact-title', {
       type: 'chars',
@@ -111,6 +112,12 @@ onMounted(() => {
       stagger: 0.15,
       ease: 'power2.out',
     }, '>-0.1')
+
+    tl.to('.impact-cat-wrap', {
+      opacity: 1,
+      duration: 1.2,
+      ease: 'power3.out',
+    }, 0.5)
 
     gsap.to('.impact-orb', {
       y: '+=8',
