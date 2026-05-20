@@ -89,19 +89,14 @@ async function handleSubmit() {
 
 function onFieldFocus(e: FocusEvent) {
   const field = (e.currentTarget as HTMLElement).closest('.field-group') as HTMLElement
-  if (!field) return
-  const line = field.querySelector('.field-accent-line') as HTMLElement
-  if (line) gsap.to(line, { scaleX: 1, duration: 0.35, ease: 'power2.out' })
+  if (field) field.classList.add('is-focused')
 }
 
 function onFieldBlur(e: FocusEvent) {
   const input = e.currentTarget as HTMLInputElement | HTMLTextAreaElement
   const field = input.closest('.field-group') as HTMLElement
   if (!field) return
-  if (!input.value) {
-    const line = field.querySelector('.field-accent-line') as HTMLElement
-    if (line) gsap.to(line, { scaleX: 0, duration: 0.3, ease: 'power2.in' })
-  }
+  if (!input.value) field.classList.remove('is-focused')
 }
 
 function loadRecaptchaScript(): Promise<void> {
@@ -538,6 +533,11 @@ onUnmounted(() => {
   background: var(--color-accent);
   transform: scaleX(0);
   transform-origin: center;
+  transition: transform 0.35s var(--ease-elegant);
+}
+
+.field-group.is-focused .field-accent-line {
+  transform: scaleX(1);
 }
 
 .submit-btn {
