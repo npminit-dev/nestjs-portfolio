@@ -1,7 +1,23 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+declare global {
+  interface Window {
+    grecaptcha: {
+      render: (container: HTMLElement, config: {
+        sitekey: string
+        theme?: string
+        callback?: (token: string) => void
+        'expired-callback'?: () => void
+      }) => number
+      getResponse: (widgetId: number) => string
+      reset: (widgetId: number) => void
+    }
+    onRecaptchaLoad?: () => void
+  }
+}
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,6 +30,12 @@ const form = reactive({ name: '', email: '', message: '' })
 const isSubmitting = ref(false)
 const isSuccess = ref(false)
 const serverError = ref('')
+
+const recaptchaLoaded = ref(false)
+const recaptchaToken = ref('')
+const recaptchaWidgetId = ref<number | null>(null)
+const recaptchaContainer = ref<HTMLElement | null>(null)
+let recaptchaScript: HTMLScriptElement | null = null
 
 let ctx: gsap.Context | null = null
 let socialCtx: gsap.Context | null = null
@@ -41,11 +63,20 @@ function validate(): boolean {
 
 async function handleSubmit() {
   if (!validate()) return
+
+  if (!recaptchaToken.value) {
+    serverError.value = 'Please complete the reCAPTCHA verification.'
+    return
+  }
+
   isSubmitting.value = true
   serverError.value = ''
 
   try {
-    const res = await $fetch('/api/contact', { method: 'POST', body: { name: form.name, email: form.email, message: form.message } })
+    const res = await $fetch('/api/contact', {
+      method: 'POST',
+      body: { name: form.name, email: form.email, message: form.message, recaptchaToken: recaptchaToken.value }
+    })
     if (res.success) {
       isSuccess.value = true
     }
@@ -70,6 +101,42 @@ function onFieldBlur(e: FocusEvent) {
   if (!input.value) {
     const line = field.querySelector('.field-accent-line') as HTMLElement
     if (line) gsap.to(line, { scaleX: 0, duration: 0.3, ease: 'power2.in' })
+  }
+}
+
+function loadRecaptchaScript(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof (window as any).grecaptcha?.render === 'function') {
+      recaptchaLoaded.value = true
+      resolve()
+      return
+    }
+    ;(window as any).onRecaptchaLoad = () => {
+      recaptchaLoaded.value = true
+      resolve()
+    }
+    const script = document.createElement('script')
+    script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit'
+    script.async = true
+    script.defer = true
+    document.head.appendChild(script)
+    recaptchaScript = script
+  })
+}
+
+function renderRecaptcha() {
+  const grecaptcha = (window as any).grecaptcha
+  if (!recaptchaContainer.value || typeof grecaptcha?.render !== 'function') return
+  try {
+    const id = grecaptcha.render(recaptchaContainer.value, {
+      sitekey: useRuntimeConfig().public.recaptchaSiteKey,
+      theme: 'dark',
+      callback: (token: string) => { recaptchaToken.value = token },
+      'expired-callback': () => { recaptchaToken.value = '' },
+    })
+    recaptchaWidgetId.value = id
+  } catch {
+    // widget already rendered
   }
 }
 
@@ -102,7 +169,7 @@ onMounted(() => {
 
   if (formSectionRef.value) {
     formCtx = gsap.context(() => {
-      gsap.set('.form-label, .form-title, .field-group, .submit-btn', { opacity: 0, y: 30 })
+      gsap.set('.form-label, .form-title, .field-group, .recaptcha-wrap, .submit-btn', { opacity: 0, y: 30 })
 
       gsap.timeline({
         scrollTrigger: {
@@ -114,7 +181,7 @@ onMounted(() => {
       })
         .to('.form-label', { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' })
         .to('.form-title', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.15')
-        .to('.field-group', { opacity: 1, y: 0, duration: 0.4, stagger: 0.08, ease: 'power3.out' }, '-=0.2')
+        .to('.field-group, .recaptcha-wrap', { opacity: 1, y: 0, duration: 0.4, stagger: 0.08, ease: 'power3.out' }, '-=0.2')
         .to('.submit-btn', { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }, '-=0.15')
     }, formSectionRef.value)
   }
@@ -132,12 +199,18 @@ onMounted(() => {
 
   requestAnimationFrame(() => ScrollTrigger.refresh(true))
   setTimeout(() => ScrollTrigger.refresh(true), 150)
+
+  loadRecaptchaScript().then(() => nextTick(() => renderRecaptcha()))
 })
 
 onUnmounted(() => {
   ctx?.revert()
   socialCtx?.revert()
   formCtx?.revert()
+  if (recaptchaScript && document.head.contains(recaptchaScript)) {
+    document.head.removeChild(recaptchaScript)
+  }
+  delete (window as any).onRecaptchaLoad
 })
 </script>
 
@@ -232,6 +305,8 @@ onUnmounted(() => {
                   <div class="field-base-line" />
                   <div class="field-accent-line" />
                 </div>
+
+                <div ref="recaptchaContainer" class="recaptcha-wrap" />
 
                 <button type="submit" class="submit-btn" :disabled="isSubmitting">
                   <span class="submit-label">{{ isSubmitting ? t('contact.formSending') : t('contact.formSubmit') }}</span>
@@ -533,6 +608,23 @@ onUnmounted(() => {
 .submit-icon {
   display: inline-flex;
   align-items: center;
+}
+
+.recaptcha-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-md);
+}
+
+.recaptcha-wrap > :deep(div) {
+  transform: scale(0.85);
+  transform-origin: center;
+}
+
+@media (max-width: 480px) {
+  .recaptcha-wrap > :deep(div) {
+    transform: scale(0.75);
+  }
 }
 
 .form-error {

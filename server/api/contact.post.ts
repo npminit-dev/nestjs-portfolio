@@ -1,8 +1,27 @@
 import nodemailer from 'nodemailer'
 
+async function verifyRecaptcha(token: string): Promise<boolean> {
+  const secret = process.env.NUXT_SECRET_RECAPTCHA_SECRET_KEY
+  if (!secret) {
+    console.warn('RECAPTCHA_SECRET_KEY not configured — skipping verification')
+    return true
+  }
+
+  try {
+    const response: { success: boolean } = await $fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret, response: token }).toString(),
+    })
+    return response.success
+  } catch {
+    return false
+  }
+}
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { name, email, message } = body
+  const { name, email, message, recaptchaToken } = body
 
   if (!name || !email || !message) {
     throw createError({ statusCode: 400, statusMessage: 'All fields are required' })
@@ -10,6 +29,10 @@ export default defineEventHandler(async (event) => {
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid email address' })
+  }
+
+  if (!recaptchaToken || !(await verifyRecaptcha(recaptchaToken))) {
+    throw createError({ statusCode: 400, statusMessage: 'reCAPTCHA verification failed' })
   }
 
   if (!process.env.CONTACT_EMAIL_USER || !process.env.CONTACT_EMAIL_PASSWORD) {

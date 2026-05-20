@@ -317,7 +317,7 @@ onUnmounted(() => {
           </div>
 
           <div class="kpi-phrases">
-            <p ref="phraseEl" class="kpi-phrase" v-text="$t(phraseKeys[currentIndex])"></p>
+            <p ref="phraseEl" class="kpi-phrase" v-text="$t(phraseKeys[currentIndex]!)"></p>
             <span ref="progressBar" class="phrase-progress" aria-hidden="true" />
           </div>
         </div>

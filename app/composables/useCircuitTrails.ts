@@ -16,10 +16,21 @@ interface ActivePath {
 
 type Dir = [number, number]
 
+function computeGridSize(w: number): number {
+  return w <= 768 ? 40 : 64
+}
+
+function computeMaxPaths(w: number): number {
+  if (w >= 1920) return 48
+  if (w >= 1440) return 36
+  if (w >= 1024) return 28
+  if (w >= 768) return 22
+  return 18
+}
+
 const CONFIG = {
   gridSize: 64,
   tailPixels: 100,
-  maxPaths: 12,
   spawnInterval: 180,
   lineWidth: 1.5,
   headOpacity: 0.07,
@@ -67,7 +78,7 @@ export function useCircuitTrails(canvasRef: Ref<HTMLCanvasElement | null>) {
   }
 
   function generatePath(): ActivePath | null {
-    const gs = CONFIG.gridSize
+    const gs = computeGridSize(width)
     const maxCol = Math.ceil(width / gs)
     const maxRow = Math.ceil(height / gs)
     const maxX = maxCol * gs
@@ -249,7 +260,7 @@ export function useCircuitTrails(canvasRef: Ref<HTMLCanvasElement | null>) {
 
   function spawn() {
     if (!running) return
-    if (paths.length < CONFIG.maxPaths) {
+    if (paths.length < computeMaxPaths(width)) {
       const p = generatePath()
       if (p) paths.push(p)
     }
