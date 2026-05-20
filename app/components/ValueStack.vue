@@ -15,12 +15,12 @@ let ctx: gsap.Context | null = null
 let mm: gsap.MatchMedia | null = null
 
 const pool = [
-  { id: '01', title: 'Web Developer', description: 'High-performance web apps that score 98+ on Lighthouse', hue: 'accent' },
-  { id: '02', title: 'Mobile Developer', description: 'Cross-platform mobile experiences, from concept to store', hue: 'secondary' },
-  { id: '03', title: 'Blockchain Developer', description: 'Smart contracts and dApps with production-grade security', hue: 'accent' },
-  { id: '04', title: 'AI-Augmented Developer', description: 'AI-accelerated delivery pipelines that cut dev time by 67%', hue: 'secondary' },
-  { id: '05', title: 'DevOps Engineer', description: 'Infrastructure as code and automated CI/CD pipelines that ship continuously', hue: 'accent' },
-  { id: '06', title: 'UI/UX Designer', description: 'Design systems and interfaces that balance beauty with usability', hue: 'secondary' },
+  { id: '01', titleKey: 'valueStack.roles.0.title', descKey: 'valueStack.roles.0.description', hue: 'accent' },
+  { id: '02', titleKey: 'valueStack.roles.1.title', descKey: 'valueStack.roles.1.description', hue: 'secondary' },
+  { id: '03', titleKey: 'valueStack.roles.2.title', descKey: 'valueStack.roles.2.description', hue: 'accent' },
+  { id: '04', titleKey: 'valueStack.roles.3.title', descKey: 'valueStack.roles.3.description', hue: 'secondary' },
+  { id: '05', titleKey: 'valueStack.roles.4.title', descKey: 'valueStack.roles.4.description', hue: 'accent' },
+  { id: '06', titleKey: 'valueStack.roles.5.title', descKey: 'valueStack.roles.5.description', hue: 'secondary' },
 ]
 
 const visibleIndices = ref(new Set([0, 1, 2, 3, 4, 5]))
@@ -213,7 +213,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  ScrollTrigger.getAll().forEach(st => st.kill())
   ctx?.revert()
   mm?.kill()
 })
@@ -233,9 +232,9 @@ onUnmounted(() => {
 
         <div class="stack-right">
           <header class="stack-header">
-            <span class="stack-label">Capabilities Stack</span>
+            <span class="stack-label">{{ $t('valueStack.sectionLabel') }}</span>
             <h2 class="stack-title">
-              Six layers of delivery
+              {{ $t('valueStack.title') }}
             </h2>
           </header>
 
@@ -245,42 +244,40 @@ onUnmounted(() => {
               :disabled="!canAdd"
               @click="addLayer"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
-Push
+              <i class="pi pi-plus" style="font-size: 0.75rem"></i>
+              {{ $t('valueStack.btnPush') }}
             </button>
             <button
               class="stack-btn"
               :disabled="!canRemove"
               @click="removeLayer"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14" /></svg>
-              Pop
+              <i class="pi pi-minus" style="font-size: 0.75rem"></i>
+              {{ $t('valueStack.btnPop') }}
             </button>
             <button
               class="stack-btn"
               :disabled="!hasCards"
               @click="resetLayers"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg>
-              Reset
+              <i class="pi pi-refresh" style="font-size: 0.75rem"></i>
+              {{ $t('valueStack.btnReset') }}
             </button>
             <p class="stack-status">
-              <template v-if="visibleIndices.size === 0">Stack cleared</template>
-              <template v-else>{{ visibleIndices.size }} of {{ pool.length }} layers active</template>
+              <template v-if="visibleIndices.size === 0">{{ $t('valueStack.statusEmpty') }}</template>
+              <template v-else>{{ $t('valueStack.statusActive', { count: visibleIndices.size, total: pool.length }) }}</template>
             </p>
           </div>
 
           <div class="stack-tray">
             <div v-if="visibleIndices.size === 0" class="stack-placeholder">
               <div class="stack-placeholder-icon" aria-hidden="true">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.3">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M9 12h6" />
-                  <path d="M12 9v6" />
-                </svg>
+                <i class="pi pi-plus-circle" style="font-size: 1.5rem; opacity: 0.3"></i>
               </div>
-              <p class="stack-placeholder-text">All capabilities collapsed</p>
-              <p class="stack-placeholder-hint">Click <strong>Add layer</strong> to rebuild</p>
+              <p class="stack-placeholder-text">{{ $t('valueStack.placeholderText') }}</p>
+              <p class="stack-placeholder-hint">
+                {{ $t('valueStack.placeholderHintBefore') }}<strong>{{ $t('valueStack.placeholderHintAction') }}</strong>{{ $t('valueStack.placeholderHintAfter') }}
+              </p>
             </div>
             <div class="stack-tray-group">
               <article
@@ -295,8 +292,8 @@ Push
                     <div class="stack-node" aria-hidden="true" />
                   </div>
                   <div class="stack-layer-content">
-                    <h3 class="stack-layer-title">{{ layer.title }}</h3>
-                    <p class="stack-layer-desc">{{ layer.description }}</p>
+                    <h3 class="stack-layer-title">{{ $t(layer.titleKey) }}</h3>
+                    <p class="stack-layer-desc">{{ $t(layer.descKey) }}</p>
                   </div>
                   <span class="stack-layer-id">{{ layer.id }}</span>
                 </div>
@@ -308,15 +305,11 @@ Push
 
       <div ref="foundationRef" class="stack-foundation">
         <div class="stack-foundation-symbol" aria-hidden="true">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1" opacity="0.6" />
-            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.6" />
-            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1" opacity="0.8" />
-          </svg>
+          <i class="pi pi-th-large" style="font-size: 1.5rem"></i>
         </div>
         <div class="stack-foundation-content">
-          <span class="stack-foundation-label">Foundation</span>
-          <p class="stack-foundation-text">Strong foundations in algorithms, OOP, and software design — principles that transcend any framework.</p>
+          <span class="stack-foundation-label">{{ $t('valueStack.foundationLabel') }}</span>
+          <p class="stack-foundation-text">{{ $t('valueStack.foundationText') }}</p>
         </div>
       </div>
     </div>
@@ -493,6 +486,7 @@ Push
   line-height: 1.25;
   color: var(--color-text-primary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 /* ── Stack group (column-reverse = first card at bottom) ── */
@@ -692,28 +686,97 @@ Push
 }
 
 /* ── Responsive ── */
+@media (max-width: 1024px) {
+  .stack-title {
+    font-size: clamp(1.5rem, 4vw, var(--text-display));
+  }
+
+  .stack-deco {
+    width: 300px;
+    height: 300px;
+    right: -150px;
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
 @media (max-width: 900px) {
+  .stack-section {
+    padding: var(--space-3xl) 0 var(--space-4xl);
+  }
+
   .stack-grid {
     grid-template-columns: 1fr;
     gap: var(--space-xl);
   }
 
   .stack-left {
-    display: none;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.06;
+  }
+
+  .stack-cat-wrap {
+    position: static;
+    width: auto;
+    height: auto;
+    max-width: min(320px, 50vw);
+  }
+
+  .stack-cat {
+    mask-image: none;
+    -webkit-mask-image: none;
+    filter: none;
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+  }
+
+  .stack-right {
+    position: relative;
+    z-index: 1;
   }
 
   .stack-header {
     text-align: left;
   }
 
+  .stack-label::after {
+    right: auto;
+    left: 0;
+  }
+
   .stack-layer-body {
+    text-align: left;
+  }
+
+  .stack-actions {
+    flex-wrap: wrap;
+  }
+
+  .stack-status {
+    margin-left: 0;
+    width: 100%;
     text-align: left;
   }
 }
 
 @media (max-width: 768px) {
   .stack-section {
-    padding: var(--space-3xl) 0;
+    padding: var(--space-2xl) 0 var(--space-3xl);
+  }
+
+  .stack-left {
+    opacity: 0.05;
+  }
+
+  .stack-cat-wrap {
+    max-width: min(240px, 55vw);
   }
 
   .stack-layer {
@@ -758,10 +821,46 @@ Push
     padding: var(--space-md);
     flex-direction: column;
     gap: var(--space-sm);
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+    border-left: none;
+    border-bottom: 2px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+  }
+
+  .stack-foundation-symbol {
+    align-self: center;
   }
 }
 
 @media (max-width: 480px) {
+  .stack-section {
+    padding: var(--space-xl) 0 var(--space-2xl);
+  }
+
+  .stack-left {
+    opacity: 0.04;
+  }
+
+  .stack-cat-wrap {
+    max-width: min(180px, 50vw);
+  }
+
+  .stack-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .stack-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .stack-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+  }
+
   .stack-layer-body {
     gap: var(--space-xs);
     flex-wrap: wrap;
@@ -777,6 +876,47 @@ Push
 
   .stack-layer-content {
     width: 100%;
+  }
+
+  .stack-actions {
+    gap: var(--space-xs);
+  }
+
+  .stack-btn {
+    font-size: 10px;
+    padding: 2px var(--space-xs);
+  }
+
+  .stack-foundation {
+    padding: var(--space-sm);
+    margin-top: var(--space-md);
+  }
+
+  .stack-foundation-text {
+    font-size: var(--text-small);
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .stack-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .stack-header {
+    margin-bottom: var(--space-md);
+  }
+
+  .stack-left {
+    opacity: 0.04;
+  }
+
+  .stack-cat-wrap {
+    max-width: min(200px, 35vw);
+  }
+
+  .stack-tray {
+    max-height: 40vh;
+    overflow-y: auto;
   }
 }
 </style>

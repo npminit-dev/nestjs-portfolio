@@ -110,7 +110,7 @@ onUnmounted(() => {
 
 <template>
   <section ref="heroRef" class="hero">
-    <div class="hero-shapes">
+    <div class="hero-shapes" aria-hidden="true">
       <div
         v-for="s in shapes"
         :key="s.id"
@@ -128,7 +128,7 @@ onUnmounted(() => {
       />
     </div>
 
-    <div class="hero-particles">
+    <div class="hero-particles" aria-hidden="true">
       <div
         v-for="p in particles"
         :key="p.id"
@@ -147,6 +147,7 @@ onUnmounted(() => {
       class="hero-noise"
       viewBox="0 0 200 200"
       preserveAspectRatio="none"
+      aria-hidden="true"
     >
       <filter id="heroNoiseFilter">
         <feTurbulence
@@ -167,30 +168,20 @@ onUnmounted(() => {
 
     <div class="container">
       <div class="hero-content">
-        <span class="hero-eyebrow">Maker &middot; Creative &middot; Human</span>
+        <span class="hero-eyebrow">{{ $t('hero.eyebrow') }}</span>
 
         <h1 class="hero-title">
-          Turning complex ideas<br>into products that scale
+          {{ $t('hero.title1') }}<br>{{ $t('hero.title2') }}
         </h1>
 
         <p class="hero-subtitle">
-          Building digital products that users love and businesses trust.
+          {{ $t('hero.subtitle') }}
         </p>
 
         <div class="hero-cta">
           <NuxtLink to="/contact" class="cta-button">
-            <span class="cta-label">Let's work together</span>
-            <svg
-              class="arrow"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            <span class="cta-label">{{ $t('hero.cta') }}</span>
+            <i class="pi pi-arrow-right arrow" aria-hidden="true"></i>
           </NuxtLink>
         </div>
       </div>
@@ -202,6 +193,7 @@ onUnmounted(() => {
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -299,19 +291,21 @@ onUnmounted(() => {
 
 .hero-title {
   font-family: var(--font-heading);
-  font-size: var(--text-display);
+  font-size: clamp(1.75rem, 5vw, var(--text-display));
   font-weight: var(--font-bold);
   line-height: 1.15;
   color: var(--color-text-primary);
   margin-bottom: var(--space-xl);
+  overflow-wrap: break-word;
 }
 
 .hero-subtitle {
-  font-size: var(--text-body-lg);
+  font-size: clamp(var(--text-body), 2.5vw, var(--text-body-lg));
   line-height: 1.7;
   color: var(--color-text-secondary);
   max-width: 580px;
   margin: 0 auto var(--space-2xl);
+  padding: 0 var(--space-sm);
 }
 
 .hero-cta {
@@ -354,8 +348,7 @@ onUnmounted(() => {
 }
 
 .cta-button .arrow {
-  width: 20px;
-  height: 20px;
+  font-size: 1.25rem;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -381,17 +374,25 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .hero {
+    min-height: 85vh;
+    min-height: 85dvh;
+    padding-top: 64px;
+  }
+
+  .hero-eyebrow {
+    font-size: clamp(10px, 2vw, var(--text-small));
+    letter-spacing: 0.15em;
+  }
+
   .hero-title {
-    font-size: 2.25rem;
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    margin-bottom: var(--space-lg);
   }
 
   .hero-subtitle {
     font-size: var(--text-body);
-  }
-
-  .cta-button {
-    padding: var(--space-sm) var(--space-lg);
-    font-size: var(--text-small);
+    margin-bottom: var(--space-xl);
   }
 
   .particle {
@@ -401,16 +402,85 @@ onUnmounted(() => {
   .shape {
     opacity: 0.02;
   }
+
+  .hero-noise {
+    opacity: 0.4;
+  }
 }
 
 @media (max-width: 480px) {
-  .hero-title {
-    font-size: 1.75rem;
+  .hero {
+    min-height: 80vh;
+    min-height: 80dvh;
+    padding-top: 56px;
+    padding-bottom: var(--space-2xl);
   }
 
   .hero-eyebrow {
     font-size: 10px;
     letter-spacing: 0.15em;
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-title {
+    font-size: clamp(1.35rem, 7vw, 1.75rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-small);
+    padding: 0;
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-cta {
+    font-size: var(--text-small);
+  }
+
+  .cta-button {
+    font-size: var(--text-small);
+  }
+
+  .particle {
+    display: none;
+  }
+
+  .shape {
+    display: none;
+  }
+
+  .hero-noise {
+    opacity: 0.3;
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-top: 56px;
+    padding-bottom: var(--space-xl);
+  }
+
+  .hero-eyebrow {
+    margin-bottom: var(--space-sm);
+  }
+
+  .hero-title {
+    margin-bottom: var(--space-sm);
+  }
+
+  .hero-subtitle {
+    margin-bottom: var(--space-md);
+    max-width: 480px;
+  }
+
+  .particle {
+    opacity: 0.04;
+  }
+
+  .shape-c {
+    display: none;
   }
 }
 </style>

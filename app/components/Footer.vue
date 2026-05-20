@@ -36,15 +36,13 @@ onUnmounted(() => {
       </p>
 
       <div class="social-links">
-        <a href="https://github.com" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+        <a href="https://github.com/npminit-dev" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
           <i class="pi pi-github"></i>
         </a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
+        <a href="https://www.linkedin.com/in/jorge-balsamo-dev/" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
           <i class="pi pi-linkedin"></i>
         </a>
-        <a href="https://twitter.com" target="_blank" rel="noopener" class="social-link" aria-label="Twitter">
-          <i class="pi pi-twitter"></i>
-        </a>
+
       </div>
     </div>
   </footer>
@@ -78,6 +76,7 @@ onUnmounted(() => {
 .social-link {
   color: var(--color-text-muted);
   font-size: var(--text-body-lg);
+  text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -90,10 +89,36 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .footer {
+    padding: var(--space-xl) var(--container-padding);
+  }
+
   .footer-inner {
     flex-direction: column;
-    gap: var(--space-lg);
+    gap: var(--space-md);
     text-align: center;
+  }
+
+  .social-links {
+    gap: var(--space-md);
+  }
+
+  .social-link {
+    font-size: var(--text-body);
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: var(--space-lg) var(--container-padding);
+  }
+
+  .copyright {
+    font-size: var(--text-tiny);
+  }
+
+  .social-link {
+    font-size: var(--text-small);
   }
 }
 </style>

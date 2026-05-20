@@ -5,5 +5,116 @@
   },
   "footer": {
     "copyright": "Todos los derechos reservados"
+  },
+  "hero": {
+    "eyebrow": "Creador · Creativo · Humano",
+    "title1": "Convirtiendo ideas complejas",
+    "title2": "en productos que escalan",
+    "subtitle": "Creando productos digitales que los usuarios aman y las empresas confían.",
+    "cta": "Trabajemos juntos"
+  },
+  "kpi": {
+    "sectionLabel": "Impacto en Números",
+    "title1": "Código que se entrega.",
+    "title2": "Productos que rinden.",
+    "metricLighthouse": "Puntuación Lighthouse",
+    "metricClients": "Clientes en Producción",
+    "metricYears": "Años de Experiencia",
+    "phrases": [
+      "Resultados medibles de cada proyecto.",
+      "Entrega acelerada con IA y herramientas personalizadas.",
+      "Automatización con agentes y servidores MCP.",
+      "Calidad de producción en cada entrega."
+    ],
+    "specialCardValue": "Impulsado por IA",
+    "specialCardLabel": "Desarrollo Acelerado"
+  },
+  "valueStack": {
+    "sectionLabel": "Stack de Capacidades",
+    "title": "Seis capas de entrega",
+    "btnPush": "Añadir",
+    "btnPop": "Quitar",
+    "btnReset": "Reiniciar",
+    "statusEmpty": "Stack vacío",
+    "statusActive": "{count} de {total} capas activas",
+    "placeholderText": "Todas las capacidades colapsadas",
+    "placeholderHintBefore": "Haz clic en ",
+    "placeholderHintAction": "Añadir capa",
+    "placeholderHintAfter": " para reconstruir",
+    "foundationLabel": "Fundación",
+    "foundationText": "Bases sólidas en algoritmos, POO y diseño de software — principios que trascienden cualquier framework.",
+    "roles": [
+      {
+        "title": "Desarrollador Web",
+        "description": "Apps web de alto rendimiento con puntuación 98+ en Lighthouse"
+      },
+      {
+        "title": "Desarrollador Móvil",
+        "description": "Experiencias móviles multiplataforma, del concepto a la tienda"
+      },
+      {
+        "title": "Desarrollador Blockchain",
+        "description": "Smart contracts y dApps con seguridad de producción"
+      },
+      {
+        "title": "Desarrollador Aumentado con IA",
+        "description": "Pipelines acelerados con IA que reducen el tiempo de desarrollo un 67%"
+      },
+      {
+        "title": "Ingeniero DevOps",
+        "description": "Infraestructura como código y pipelines CI/CD automatizados"
+      },
+      {
+        "title": "Diseñador UI/UX",
+        "description": "Sistemas de diseño e interfaces que equilibran belleza y usabilidad"
+      }
+    ]
+  },
+  "impact": {
+    "sectionLabel": "Principios Operativos",
+    "title": "Ideas que guían el trabajo",
+    "items": [
+      {
+        "name": "De cero a producción",
+        "description": "Cada proyecto empieza como una página en blanco. Cada proyecto se entrega.",
+        "outcome": "Ideas en producción"
+      },
+      {
+        "name": "Primeros principios",
+        "description": "Bases sólidas en algoritmos, diseño y pensamiento sistémico.",
+        "outcome": "Sin dependencia de frameworks"
+      },
+      {
+        "name": "El filo del 80/20",
+        "description": "Máximo valor, mínima fricción — priorizado sin piedad.",
+        "outcome": "Impacto por unidad de esfuerzo"
+      }
+    ]
+  },
+  "cta": {
+    "label": "Trabajemos",
+    "title": "Construyamos algo grandioso",
+    "text": "Tu próximo proyecto comienza aquí. Hagámoslo realidad.",
+    "link": "Ponte en contacto"
+  },
+  "contact": {
+    "socialLabel": "Conectar",
+    "socialTitle": "Iniciemos una conversación",
+    "socialText": "Ya sea un proyecto, un rol o simplemente una idea — siempre estoy abierto a conversar.",
+    "socialGithub": "GitHub",
+    "socialLinkedin": "LinkedIn",
+    "socialTwitter": "X / Twitter",
+    "socialEmail": "Email",
+    "formLabel": "Mensaje",
+    "formTitle": "Envía un mensaje",
+    "formName": "Nombre",
+    "formEmail": "Email",
+    "formMessage": "Mensaje",
+    "formSubmit": "Enviar mensaje",
+    "formSending": "Enviando...",
+    "formSuccess": "Mensaje enviado con éxito. Te responderé pronto.",
+    "formError": "Algo salió mal. Intenta de nuevo.",
+    "formErrorRequired": "Completa todos los campos.",
+    "formErrorEmail": "Ingresa un email válido."
   }
 }

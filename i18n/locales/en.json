@@ -5,5 +5,116 @@
   },
   "footer": {
     "copyright": "All rights reserved"
+  },
+  "hero": {
+    "eyebrow": "Maker · Creative · Human",
+    "title1": "Turning complex ideas",
+    "title2": "into products that scale",
+    "subtitle": "Building digital products that users love and businesses trust.",
+    "cta": "Let's work together"
+  },
+  "kpi": {
+    "sectionLabel": "Impact in Numbers",
+    "title1": "Code that ships.",
+    "title2": "Products that perform.",
+    "metricLighthouse": "Lighthouse Score",
+    "metricClients": "Production Clients",
+    "metricYears": "Years Shipping",
+    "phrases": [
+      "Measurable results from every project.",
+      "AI-accelerated delivery with custom tooling.",
+      "Agent-based automation and MCP servers.",
+      "Production-grade quality on every ship."
+    ],
+    "specialCardValue": "AI-Driven",
+    "specialCardLabel": "Development Accelerated"
+  },
+  "valueStack": {
+    "sectionLabel": "Capabilities Stack",
+    "title": "Six layers of delivery",
+    "btnPush": "Push",
+    "btnPop": "Pop",
+    "btnReset": "Reset",
+    "statusEmpty": "Stack cleared",
+    "statusActive": "{count} of {total} layers active",
+    "placeholderText": "All capabilities collapsed",
+    "placeholderHintBefore": "Click ",
+    "placeholderHintAction": "Add layer",
+    "placeholderHintAfter": " to rebuild",
+    "foundationLabel": "Foundation",
+    "foundationText": "Strong foundations in algorithms, OOP, and software design — principles that transcend any framework.",
+    "roles": [
+      {
+        "title": "Web Developer",
+        "description": "High-performance web apps that score 98+ on Lighthouse"
+      },
+      {
+        "title": "Mobile Developer",
+        "description": "Cross-platform mobile experiences, from concept to store"
+      },
+      {
+        "title": "Blockchain Developer",
+        "description": "Smart contracts and dApps with production-grade security"
+      },
+      {
+        "title": "AI-Augmented Developer",
+        "description": "AI-accelerated delivery pipelines that cut dev time by 67%"
+      },
+      {
+        "title": "DevOps Engineer",
+        "description": "Infrastructure as code and automated CI/CD pipelines that ship continuously"
+      },
+      {
+        "title": "UI/UX Designer",
+        "description": "Design systems and interfaces that balance beauty with usability"
+      }
+    ]
+  },
+  "impact": {
+    "sectionLabel": "Operating Principles",
+    "title": "Ideas that guide the work",
+    "items": [
+      {
+        "name": "From zero to shipped",
+        "description": "Every project starts as a blank page. Every project ships.",
+        "outcome": "Ideas in production"
+      },
+      {
+        "name": "First principles",
+        "description": "Strong foundations in algorithms, design, and systems thinking.",
+        "outcome": "No framework dependency"
+      },
+      {
+        "name": "The 80/20 edge",
+        "description": "Maximum value, minimum friction — ruthlessly prioritized.",
+        "outcome": "Impact per unit effort"
+      }
+    ]
+  },
+  "cta": {
+    "label": "Let's work",
+    "title": "Let's build something great",
+    "text": "Your next project starts here. Let's make it happen.",
+    "link": "Get in touch"
+  },
+  "contact": {
+    "socialLabel": "Connect",
+    "socialTitle": "Let's start a conversation",
+    "socialText": "Whether it's a project, a role, or just a thought — I'm always open to talk.",
+    "socialGithub": "GitHub",
+    "socialLinkedin": "LinkedIn",
+    "socialTwitter": "X / Twitter",
+    "socialEmail": "Email",
+    "formLabel": "Message",
+    "formTitle": "Send a message",
+    "formName": "Name",
+    "formEmail": "Email",
+    "formMessage": "Message",
+    "formSubmit": "Send message",
+    "formSending": "Sending...",
+    "formSuccess": "Message sent successfully! I'll get back to you soon.",
+    "formError": "Something went wrong. Please try again.",
+    "formErrorRequired": "Please fill in all fields.",
+    "formErrorEmail": "Please enter a valid email address."
   }
 }

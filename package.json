@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.3.0",
-    "@primeicons/vue": "^8.0.0-alpha.1",
     "gsap": "^3.15.0",
     "nodemailer": "^8.0.7",
     "nuxt": "^4.4.5",
+    "primeicons": "^7.0.0",
     "vue": "^3.5.34",
     "vue-router": "^5.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/nodemailer": "^8.0.0"
   }
 }

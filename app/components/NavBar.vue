@@ -6,6 +6,7 @@ const { locale, setLocale } = useI18n()
 
 const isVisible = ref(true)
 const isScrolled = ref(false)
+const isMenuOpen = ref(false)
 const hideTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
 const showNav = () => {
@@ -24,6 +25,7 @@ const showNav = () => {
 const hideNav = () => {
   if (isVisible.value) {
     isVisible.value = false
+    isMenuOpen.value = false
     gsap.to('.navbar', {
       opacity: 0,
       y: -10,
@@ -40,6 +42,14 @@ const resetHideTimer = () => {
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 30
+}
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+const closeMenu = () => {
+  isMenuOpen.value = false
 }
 
 let ctx: gsap.Context | null = null
@@ -66,11 +76,37 @@ onUnmounted(() => {
 <template>
   <header class="navbar" :class="{ scrolled: isScrolled }">
     <div class="navbar-inner">
-      <NuxtLink to="/" class="logo">JB</NuxtLink>
+      <NuxtLink to="/" class="logo" @click="closeMenu">JB</NuxtLink>
 
-      <nav class="nav-links">
-        <NuxtLink to="/" class="nav-link">{{ $t('nav.home') }}</NuxtLink>
-        <NuxtLink to="/contact" class="nav-link">{{ $t('nav.contact') }}</NuxtLink>
+      <button
+        class="hamburger"
+        :class="{ active: isMenuOpen }"
+        @click="toggleMenu"
+        aria-label="Toggle navigation menu"
+        :aria-expanded="isMenuOpen"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="nav-links" :class="{ open: isMenuOpen }">
+        <NuxtLink to="/" class="nav-link" @click="closeMenu">{{ $t('nav.home') }}</NuxtLink>
+        <NuxtLink to="/contact" class="nav-link" @click="closeMenu">{{ $t('nav.contact') }}</NuxtLink>
+
+        <div class="lang-switcher-mobile">
+          <button
+            class="lang-btn"
+            :class="{ active: locale === 'en' }"
+            @click="setLocale('en'); closeMenu()"
+          >EN</button>
+          <span class="lang-divider">|</span>
+          <button
+            class="lang-btn"
+            :class="{ active: locale === 'es' }"
+            @click="setLocale('es'); closeMenu()"
+          >ES</button>
+        </div>
       </nav>
 
       <div class="lang-switcher">
@@ -87,6 +123,8 @@ onUnmounted(() => {
         >ES</button>
       </div>
     </div>
+
+    <div v-if="isMenuOpen" class="mobile-overlay" @click="closeMenu" />
   </header>
 </template>
 
@@ -119,15 +157,18 @@ onUnmounted(() => {
 
 .logo {
   font-family: var(--font-heading);
-  font-size: var(--text-h3);
+  font-size: var(--text-h2);
   font-weight: var(--font-bold);
   color: var(--color-text-primary);
   text-decoration: none;
   letter-spacing: -0.02em;
+  z-index: 1002;
+  position: relative;
 }
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: var(--space-xl);
 }
 
@@ -149,10 +190,51 @@ onUnmounted(() => {
   color: var(--color-accent);
 }
 
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1002;
+  position: relative;
+}
+
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text-primary);
+  border-radius: 2px;
+  transition: transform 0.3s var(--ease-default), opacity 0.3s var(--ease-default);
+}
+
+.hamburger.active .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 .lang-switcher {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  z-index: 1002;
+  position: relative;
+}
+
+.lang-switcher-mobile {
+  display: none;
 }
 
 .lang-btn {
@@ -179,9 +261,13 @@ onUnmounted(() => {
   font-size: var(--text-tiny);
 }
 
+.mobile-overlay {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .navbar-inner {
-    padding: 0 var(--space-sm);
+    padding: 0;
   }
 
   .nav-links {
@@ -193,7 +279,7 @@ onUnmounted(() => {
   }
 
   .logo {
-    font-size: var(--text-h4);
+    font-size: 1.25rem;
   }
 
   .lang-btn {
@@ -203,6 +289,66 @@ onUnmounted(() => {
 
   .lang-divider {
     font-size: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 75%;
+    max-width: 320px;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-2xl);
+    background: var(--color-surface);
+    border-left: 1px solid var(--color-gray-600);
+    padding: var(--space-4xl) var(--space-xl);
+    transform: translateX(100%);
+    transition: transform 0.35s var(--ease-elegant);
+    z-index: 1001;
+  }
+
+  .nav-links.open {
+    transform: translateX(0);
+  }
+
+  .nav-link {
+    font-size: var(--text-h3);
+  }
+
+  .lang-switcher {
+    display: none;
+  }
+
+  .lang-switcher-mobile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+  }
+
+  .lang-switcher-mobile .lang-btn {
+    font-size: var(--text-small);
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .lang-switcher-mobile .lang-divider {
+    font-size: var(--text-small);
+  }
+
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
   }
 }
 </style>

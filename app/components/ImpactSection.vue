@@ -14,29 +14,29 @@ let ctx: gsap.Context | null = null
 
 interface Project {
   id: string
-  name: string
-  description: string
-  outcome: string
+  nameKey: string
+  descriptionKey: string
+  outcomeKey: string
 }
 
 const projects: Project[] = [
   {
     id: '01',
-    name: 'From zero to shipped',
-    description: 'Every project starts as a blank page. Every project ships.',
-    outcome: 'Ideas in production',
+    nameKey: 'impact.items.0.name',
+    descriptionKey: 'impact.items.0.description',
+    outcomeKey: 'impact.items.0.outcome',
   },
   {
     id: '02',
-    name: 'First principles',
-    description: 'Strong foundations in algorithms, design, and systems thinking.',
-    outcome: 'No framework dependency',
+    nameKey: 'impact.items.1.name',
+    descriptionKey: 'impact.items.1.description',
+    outcomeKey: 'impact.items.1.outcome',
   },
   {
     id: '03',
-    name: 'The 80/20 edge',
-    description: 'Maximum value, minimum friction — ruthlessly prioritized.',
-    outcome: 'Impact per unit effort',
+    nameKey: 'impact.items.2.name',
+    descriptionKey: 'impact.items.2.description',
+    outcomeKey: 'impact.items.2.outcome',
   },
 ]
 
@@ -156,9 +156,9 @@ onUnmounted(() => {
       <div class="impact-grid">
         <div class="impact-left">
           <header class="impact-header">
-            <span class="impact-label">Operating Principles</span>
+            <span class="impact-label">{{ $t('impact.sectionLabel') }}</span>
             <h2 class="impact-title">
-              Ideas that guide the work
+              {{ $t('impact.title') }}
             </h2>
           </header>
 
@@ -174,11 +174,11 @@ onUnmounted(() => {
                 <span class="impact-item-dot" />
               </div>
               <div class="impact-item-body">
-                <h3 class="impact-item-title">{{ project.name }}</h3>
-                <p class="impact-item-desc">{{ project.description }}</p>
+                <h3 class="impact-item-title">{{ $t(project.nameKey) }}</h3>
+                <p class="impact-item-desc">{{ $t(project.descriptionKey) }}</p>
                 <div class="impact-item-outcome-wrap">
                   <span class="impact-item-outcome-bar" />
-                  <span class="impact-item-outcome">{{ project.outcome }}</span>
+                  <span class="impact-item-outcome">{{ $t(project.outcomeKey) }}</span>
                 </div>
               </div>
             </article>
@@ -314,6 +314,7 @@ onUnmounted(() => {
   line-height: 1.25;
   color: var(--color-text-primary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 :deep(.impact-title-char) {
@@ -449,6 +450,7 @@ onUnmounted(() => {
   color: var(--color-text-secondary);
   margin: 0 0 var(--space-sm);
   max-width: 500px;
+  overflow-wrap: break-word;
 }
 
 .impact-item-outcome-wrap {
@@ -476,6 +478,21 @@ onUnmounted(() => {
   width: fit-content;
 }
 
+@media (max-width: 1024px) {
+  .impact-title {
+    font-size: clamp(1.5rem, 4vw, var(--text-display));
+  }
+
+  .impact-orb-wrap {
+    opacity: 0.4;
+  }
+
+  .impact-orb {
+    width: min(500px, 60vw);
+    height: min(500px, 60vw);
+  }
+}
+
 @media (max-width: 768px) {
   .impact-section {
     padding: var(--space-3xl) 0;
@@ -486,11 +503,38 @@ onUnmounted(() => {
   }
 
   .impact-right {
-    display: none;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    pointer-events: none;
+    height: auto;
+  }
+
+  .impact-cat-wrap {
+    width: auto;
+    max-width: min(300px, 50vw);
+  }
+
+  .impact-cat {
+    opacity: 0.06 !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    filter: none !important;
+    transform: none !important;
+    border-radius: 0;
+    max-height: 50vh;
+  }
+
+  .impact-left {
+    position: relative;
+    z-index: 1;
   }
 
   .impact-title {
-    font-size: var(--text-h1);
+    font-size: clamp(1.35rem, 4.5vw, var(--text-h1));
   }
 
   .impact-timeline {
@@ -505,18 +549,116 @@ onUnmounted(() => {
   }
 
   .impact-item-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   .impact-item-bg-num {
-    font-size: 40px;
-    right: 8px;
-    opacity: 0.03;
+    font-size: 32px;
+    right: 6px;
+    opacity: 0.025;
   }
 
   .impact-item-title {
     font-size: var(--text-body-lg);
+  }
+
+  .impact-item-desc {
+    font-size: var(--text-small);
+  }
+}
+
+@media (max-width: 480px) {
+  .impact-section {
+    padding: var(--space-2xl) 0;
+  }
+
+  .impact-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .impact-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .impact-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+  }
+
+  .impact-cat-wrap {
+    max-width: min(200px, 45vw);
+    opacity: 0.04;
+  }
+
+  .impact-item {
+    grid-template-columns: 20px 1fr;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    padding-left: var(--space-md);
+    border-radius: var(--radius-md);
+  }
+
+  .impact-item-left {
+    padding-top: 2px;
+  }
+
+  .impact-item-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .impact-item-bg-num {
+    display: none;
+  }
+
+  .impact-item-title {
+    font-size: var(--text-body);
+  }
+
+  .impact-item-desc {
+    font-size: var(--text-tiny);
+    margin-bottom: var(--space-xs);
+  }
+
+  .impact-item-outcome {
+    font-size: 10px;
+  }
+
+  .impact-orb-wrap {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .impact-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .impact-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .impact-cat-wrap {
+    opacity: 0.04;
+    max-width: min(180px, 35vw);
+  }
+
+  .impact-orb-wrap {
+    opacity: 0.2;
+  }
+
+  .impact-list {
+    gap: var(--space-xs);
+  }
+
+  .impact-item {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .impact-item-bg-num {
+    display: none;
   }
 }
 

@@ -8,6 +8,8 @@ import catDesktopSmall from '~/assets/img/kpi-cat-desktop-small.webp'
 import catMobile from '~/assets/img/kpi-cat-mobile.webp'
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
+const { t } = useI18n()
+
 const sectionRef = ref<HTMLElement | null>(null)
 const phraseEl = ref<HTMLElement | null>(null)
 const progressBar = ref<HTMLElement | null>(null)
@@ -24,16 +26,16 @@ interface Counter {
 }
 
 const metrics = [
-  { value: 98, suffix: '+', label: 'Lighthouse Score', index: 0, icon: 'shield' },
-  { value: 4, suffix: '', label: 'Production Clients', index: 1, icon: 'briefcase' },
-  { value: 3, suffix: '+', label: 'Years Shipping', index: 2, icon: 'calendar' },
+  { value: 98, suffix: '+', label: 'kpi.metricLighthouse', index: 0, icon: 'shield' },
+  { value: 4, suffix: '', label: 'kpi.metricClients', index: 1, icon: 'briefcase' },
+  { value: 3, suffix: '+', label: 'kpi.metricYears', index: 2, icon: 'calendar' },
 ]
 
-const phrases = [
-  'Measurable results from every project.',
-  'AI-accelerated delivery with custom tooling.',
-  'Agent-based automation and MCP servers.',
-  'Production-grade quality on every ship.',
+const phraseKeys = [
+  'kpi.phrases.0',
+  'kpi.phrases.1',
+  'kpi.phrases.2',
+  'kpi.phrases.3',
 ]
 
 const currentIndex = ref(0)
@@ -119,7 +121,7 @@ function cycleForward() {
     duration: 0.4,
     ease: 'power2.in',
     onComplete: () => {
-      currentIndex.value = (currentIndex.value + 1) % phrases.length
+      currentIndex.value = (currentIndex.value + 1) % phraseKeys.length
       nextTick(() => {
         startProgressBar()
         gsap.fromTo(phraseEl.value,
@@ -208,7 +210,7 @@ onMounted(() => {
 
     counters.forEach((counter, i) => {
       tl.to(counter, {
-        current: metrics[i].value,
+        current: metrics[i]!.value,
         duration: 1.8,
         ease: 'none',
         onUpdate: () => {
@@ -243,7 +245,7 @@ onMounted(() => {
     })
 
 
-  }, sectionRef.value)
+  }, sectionRef.value!)
 
   sectionRef.value?.addEventListener('mousemove', onMouseMove)
   sectionRef.value?.addEventListener('mouseleave', onMouseLeave)
@@ -273,9 +275,9 @@ onUnmounted(() => {
       <div class="kpi-main">
         <div class="kpi-left">
           <div class="kpi-header">
-            <span class="section-label">Impact in Numbers</span>
+            <span class="section-label">{{ $t('kpi.sectionLabel') }}</span>
             <h2 class="kpi-title">
-              Code that ships.<br />Products that perform.
+              {{ $t('kpi.title1') }}<br />{{ $t('kpi.title2') }}
             </h2>
           </div>
 
@@ -286,39 +288,36 @@ onUnmounted(() => {
               class="kpi-card"
             >
               <div class="kpi-value-wrap">
-                <svg class="kpi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <template v-if="metric.icon === 'shield'">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </template>
-                  <template v-else-if="metric.icon === 'briefcase'">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                  </template>
-                  <template v-else-if="metric.icon === 'calendar'">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </template>
-                </svg>
+                <i
+                  v-if="metric.icon === 'shield'"
+                  class="pi pi-shield kpi-icon"
+                ></i>
+                <i
+                  v-else-if="metric.icon === 'briefcase'"
+                  class="pi pi-briefcase kpi-icon"
+                ></i>
+                <i
+                  v-else-if="metric.icon === 'calendar'"
+                  class="pi pi-calendar kpi-icon"
+                ></i>
                 <span class="kpi-value">
                   {{ displayValues[metric.index] }}{{ metric.suffix }}
                 </span>
               </div>
-              <span class="kpi-label">{{ metric.label }}</span>
+              <span class="kpi-label">{{ $t(metric.label) }}</span>
             </div>
 
             <div ref="specialCardRef" class="kpi-card kpi-card--special">
               <div class="kpi-card-body">
-                <span class="kpi-value kpi-value--accent">AI-Driven</span>
+                <span class="kpi-value kpi-value--accent">{{ $t('kpi.specialCardValue') }}</span>
                 <span class="kpi-accent-dot" />
-                <span class="kpi-label">Development Accelerated</span>
+                <span class="kpi-label">{{ $t('kpi.specialCardLabel') }}</span>
               </div>
             </div>
           </div>
 
           <div class="kpi-phrases">
-            <p ref="phraseEl" class="kpi-phrase" v-text="phrases[currentIndex]"></p>
+            <p ref="phraseEl" class="kpi-phrase" v-text="$t(phraseKeys[currentIndex])"></p>
             <span ref="progressBar" class="phrase-progress" aria-hidden="true" />
           </div>
         </div>
@@ -652,6 +651,7 @@ onUnmounted(() => {
 
 .kpi-icon {
   flex-shrink: 0;
+  font-size: 1.25rem;
   color: var(--color-accent);
   opacity: 0.85;
 }
@@ -689,9 +689,64 @@ onUnmounted(() => {
   right: 0;
   margin: 0;
   text-align: left;
-  font-size: var(--text-body-lg);
+  font-size: var(--text-body-sm);
   line-height: 1.7;
   color: var(--color-text-secondary);
+}
+
+@media (max-width: 1024px) {
+  .kpi-section {
+    position: relative;
+  }
+
+  .kpi-main {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+
+  .kpi-left {
+    position: relative;
+    z-index: 1;
+  }
+
+  .kpi-right {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .kpi-cat {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    width: auto;
+    height: auto;
+  }
+
+  .kpi-cat img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(380px, 55vw);
+    max-height: min(400px, 50vh);
+    opacity: 0.1 !important;
+  }
+
+  .kpi-grid {
+    flex-wrap: wrap;
+  }
+
+  .kpi-phrases {
+    max-width: 100%;
+    margin-right: 0;
+  }
+
+  .kpi-phrase {
+    text-align: left;
+  }
 }
 
 @media (max-width: 768px) {
@@ -699,19 +754,8 @@ onUnmounted(() => {
     padding: var(--space-3xl) 0;
   }
 
-  .kpi-main {
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-  }
-
-  .kpi-cat {
-    max-width: 260px;
-    margin: 0 auto;
-    opacity: 0.7;
-  }
-
-  .kpi-grid {
-    flex-wrap: wrap;
+  .kpi-cat img {
+    opacity: 0.08 !important;
   }
 
   .kpi-card {
@@ -729,7 +773,7 @@ onUnmounted(() => {
   }
 
   .kpi-title {
-    font-size: var(--text-h1);
+    font-size: clamp(1.35rem, 4.5vw, var(--text-h1));
   }
 
   .kpi-value {
@@ -739,14 +783,87 @@ onUnmounted(() => {
   .kpi-value--accent {
     font-size: var(--text-body-lg);
   }
+
+  .kpi-label {
+    font-size: 0.55rem;
+  }
+
+  .kpi-phrases {
+    height: 2.2em;
+  }
 }
 
 @media (max-width: 480px) {
+  .kpi-section {
+    padding: var(--space-2xl) 0 var(--space-3xl);
+  }
+
+  .kpi-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .kpi-grid {
+    border-radius: var(--radius-md);
+  }
+
   .kpi-card {
     flex: 0 0 100%;
+    padding: var(--space-md) var(--space-sm);
+    border-right: none;
+  }
+
+  .kpi-card:not(:last-child) {
+    border-bottom: 1px solid rgba(39, 39, 42, 0.3);
+  }
+
+  .kpi-card:nth-child(2) {
+    border-bottom: 1px solid rgba(39, 39, 42, 0.3);
   }
 
   .kpi-cat {
+    display: none;
+  }
+
+  .kpi-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+  }
+
+  .kpi-value {
+    font-size: var(--text-body-lg);
+  }
+
+  .kpi-value--accent {
+    font-size: var(--text-body);
+  }
+
+  .kpi-phrases {
+    height: 2.6em;
+  }
+
+  .kpi-phrase {
+    font-size: var(--text-tiny);
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .kpi-section {
+    padding: var(--space-2xl) 0;
+  }
+
+  .kpi-main {
+    gap: var(--space-lg);
+  }
+
+  .kpi-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .kpi-cat {
+    max-width: min(220px, 40%);
+    opacity: 0.06;
+  }
+
+  .kpi-phrases {
     display: none;
   }
 }

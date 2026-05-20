@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['~/assets/css/variables.css'],
+  css: ['primeicons/primeicons.css', '~/assets/css/variables.css'],
   modules: ['@nuxtjs/i18n'],
   i18n: {
     locales: [
@@ -10,7 +10,6 @@ export default defineNuxtConfig({
       { code: 'es', iso: 'es-ES', name: 'Español', file: 'es.json' }
     ],
     defaultLocale: 'en',
-    lazy: true,
     langDir: 'locales',
     strategy: 'no_prefix',
     detectBrowserLanguage: {

@@ -61,20 +61,12 @@ onUnmounted(() => {
   <section ref="sectionRef" class="cta-section">
     <div class="container">
       <div class="cta-content">
-        <span class="cta-label">Let's work</span>
-        <h2 class="cta-title">Let's build something great</h2>
-        <p class="cta-text">Your next project starts here. Let's make it happen.</p>
+        <span class="cta-label">{{ $t('cta.label') }}</span>
+        <h2 class="cta-title">{{ $t('cta.title') }}</h2>
+        <p class="cta-text">{{ $t('cta.text') }}</p>
         <NuxtLink to="/contact" class="cta-link">
-          <span>Get in touch</span>
-          <svg
-            width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
+          <span>{{ $t('cta.link') }}</span>
+          <i class="pi pi-arrow-right" aria-hidden="true"></i>
         </NuxtLink>
       </div>
     </div>
@@ -148,6 +140,7 @@ onUnmounted(() => {
   color: var(--color-text-primary);
   line-height: 1.25;
   margin: 0 0 var(--space-md);
+  overflow-wrap: break-word;
 }
 
 .cta-text {
@@ -180,12 +173,18 @@ onUnmounted(() => {
   transform: translateY(-1px);
 }
 
-.cta-link svg {
+.cta-link i {
   transition: transform var(--duration-normal) var(--ease-out);
 }
 
-.cta-link:hover svg {
+.cta-link:hover i {
   transform: translateX(3px);
+}
+
+@media (max-width: 1024px) {
+  .cta-title {
+    font-size: clamp(1.5rem, 4vw, var(--text-h1));
+  }
 }
 
 @media (max-width: 768px) {
@@ -198,11 +197,60 @@ onUnmounted(() => {
   }
 
   .cta-title {
-    font-size: var(--text-h2);
+    font-size: clamp(1.35rem, 4.5vw, var(--text-h2));
   }
 
   .cta-text {
     font-size: var(--text-body);
+  }
+
+  .cta-label {
+    font-size: clamp(10px, 2vw, var(--text-small));
+    letter-spacing: 0.15em;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: var(--space-2xl) var(--container-padding);
+  }
+
+  .cta-label {
+    font-size: 10px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .cta-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+    margin-bottom: var(--space-sm);
+  }
+
+  .cta-text {
+    font-size: var(--text-small);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-link {
+    font-size: var(--text-small);
+    padding: var(--space-xs) var(--space-lg);
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .cta-section {
+    min-height: 70vh;
+  }
+
+  .container {
+    padding: var(--space-xl) var(--container-padding);
+  }
+
+  .cta-title {
+    margin-bottom: var(--space-sm);
+  }
+
+  .cta-text {
+    margin-bottom: var(--space-md);
   }
 }
 </style>
