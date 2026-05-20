@@ -249,14 +249,16 @@ onUnmounted(() => {
 
 .impact-right {
   min-width: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .impact-cat-wrap {
-  position: sticky;
-  top: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .impact-cat {
