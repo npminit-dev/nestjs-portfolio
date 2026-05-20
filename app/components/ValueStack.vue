@@ -326,7 +326,7 @@ onUnmounted(() => {
 <style scoped>
 /* ── Section ── */
 .stack-section {
-  padding: var(--space-4xl) 0;
+  padding: calc(var(--space-4xl) / 2) 0 calc(var(--space-4xl) * 1.5);
   position: relative;
   background: rgba(10, 10, 11, 0.2);
 }
@@ -605,6 +605,7 @@ onUnmounted(() => {
   color: var(--color-text-secondary);
   margin: 0;
   max-width: 100%;
+  text-wrap: balance;
 }
 
 /* ── Stack actions (buttons) ── */
