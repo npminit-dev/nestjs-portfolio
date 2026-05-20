@@ -12,11 +12,7 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     langDir: 'locales',
     strategy: 'no_prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root'
-    }
+    detectBrowserLanguage: false
   },
   runtimeConfig: {
     recaptchaSecretKey: '',
