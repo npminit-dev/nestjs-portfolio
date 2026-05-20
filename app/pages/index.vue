@@ -2,6 +2,7 @@
 import HeroSection from '~/components/HeroSection.vue'
 import KpiBar from '~/components/KpiBar.vue'
 import ValueStack from '~/components/ValueStack.vue'
+import ImpactSection from '~/components/ImpactSection.vue'
 </script>
 
 <template>
@@ -9,5 +10,6 @@ import ValueStack from '~/components/ValueStack.vue'
     <HeroSection />
     <KpiBar />
     <ValueStack />
+    <ImpactSection />
   </div>
 </template>

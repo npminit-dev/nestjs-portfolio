@@ -246,7 +246,7 @@ onUnmounted(() => {
               @click="addLayer"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
-              Add layer
+Push
             </button>
             <button
               class="stack-btn"
@@ -479,7 +479,7 @@ onUnmounted(() => {
   content: '';
   position: absolute;
   bottom: -6px;
-  left: 0;
+  right: 0;
   width: 24px;
   height: 1px;
   background: var(--color-accent);
